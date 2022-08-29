@@ -5,40 +5,38 @@
   import { longPress } from "./longpress.js";
 </script>
 
-<div>
-  <div class="d-pad">
-    <div
-      class="up border"
-      use:longPress
-      on:longpress={() => websocket.moveServoPitch(-10)}
-      on:mousedown={() => websocket.moveServoPitch(-5)}
-    >
-      <div class="triangle-up" />
-    </div>
-    <div
-      class="down border"
-      use:longPress
-      on:longpress={() => websocket.moveServoPitch(-10)}
-      on:mousedown={() => websocket.moveServoPitch(5)}
-    >
-      <div class="triangle-down" />
-    </div>
-    <div
-      class="right border"
-      use:longPress
-      on:longpress={() => websocket.moveServoYaw(-10)}
-      on:mousedown={() => websocket.moveServoYaw(-5)}
-    >
-      <div class="triangle-right" />
-    </div>
-    <div
-      class="left border"
-      use:longPress
-      on:longpress={() => websocket.moveServoYaw(-10)}
-      on:mousedown={() => websocket.moveServoYaw(5)}
-    >
-      <div class="triangle-left" />
-    </div>
+<div class="d-pad">
+  <div
+    class="up border"
+    use:longPress
+    on:longpress={() => websocket.moveServoPitch(-10)}
+    on:click={() => websocket.moveServoPitch(-5)}
+  >
+    <div class="triangle-up" />
+  </div>
+  <div
+    class="down border"
+    use:longPress
+    on:longpress={() => websocket.moveServoPitch(10)}
+    on:click={() => websocket.moveServoPitch(5)}
+  >
+    <div class="triangle-down" />
+  </div>
+  <div
+    class="right border"
+    use:longPress
+    on:longpress={() => websocket.moveServoYaw(-10)}
+    on:click={() => websocket.moveServoYaw(-5)}
+  >
+    <div class="triangle-right" />
+  </div>
+  <div
+    class="left border"
+    use:longPress
+    on:longpress={() => websocket.moveServoYaw(10)}
+    on:click={() => websocket.moveServoYaw(5)}
+  >
+    <div class="triangle-left" />
   </div>
 </div>
 
@@ -165,5 +163,12 @@
     top: 70%;
     left: 50%;
     transform: translate(-50%, -70%);
+  }
+
+  @media only screen and (max-width: 1200px) {
+    .d-pad {
+      transform: scale(0.5);
+      transform-origin: top left;
+    }
   }
 </style>

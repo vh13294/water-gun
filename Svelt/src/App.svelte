@@ -4,13 +4,7 @@
 </script>
 
 <main>
-  <h1>Vite + Svelte</h1>
+  <Joystick />
 
-  <div class="card">
-    <Counter />
-  </div>
-
-  <div class="card">
-    <Joystick />
-  </div>
+  <Counter />
 </main>

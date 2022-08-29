@@ -1,8 +1,10 @@
+/**
+ * @param {HTMLDivElement} node
+ */
 export function longPress(node, duration = 50) {
     let timer;
 
-    const handleMousedown = () => {
-        console.log("mousedown")
+    const handleAction = () => {
         timer = setTimeout(repeat, duration);
     };
 
@@ -12,16 +14,20 @@ export function longPress(node, duration = 50) {
 
     const repeat = () => {
         node.dispatchEvent(new CustomEvent('longpress'));
-        handleMousedown()
+        handleAction()
     }
 
-    node.addEventListener('mousedown', handleMousedown);
+    node.addEventListener('mousedown', handleAction);
+    node.addEventListener('touchstart', handleAction);
     node.addEventListener('mouseup', handleClear);
+    node.addEventListener('touchend', handleClear);
 
     return {
         destroy() {
-            node.removeEventListener('mousedown', handleMousedown);
+            node.removeEventListener('mousedown', handleAction);
+            node.removeEventListener('touchstart', handleAction);
             node.removeEventListener('mouseup', handleClear);
+            node.removeEventListener('touchend', handleClear);
         }
     };
 }
