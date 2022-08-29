@@ -42,10 +42,12 @@
 
 <style>
   .d-pad {
-    position: relative;
+    position: absolute;
     height: 500px;
     width: 500px;
     touch-action: manipulation;
+    z-index: 1;
+    opacity: 0.8;
   }
 
   .d-pad .up {
@@ -168,7 +170,8 @@
 
   @media only screen and (max-width: 1200px) {
     .d-pad {
-      transform: scale(0.5);
+      top: 50%;
+      transform: scale(0.5) translate(0, -50%);
       transform-origin: top left;
     }
   }

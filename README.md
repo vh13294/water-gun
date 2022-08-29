@@ -5,12 +5,6 @@
   - Link with ESPHome
   - Allow websocket api
 
-https://www.home-assistant.io/integrations/input_number/
-
-https://developers.home-assistant.io/docs/api/websocket/
-
-https://codepen.io/tswone/pen/GLzZLd
-
 2. Micro-controller
   - ESP32
   - Flash ESPHome
@@ -18,3 +12,6 @@ https://codepen.io/tswone/pen/GLzZLd
 3. Camera module
   - Configure camera stream using https://motion-project.github.io/
   - USB webcam vs CSI camera (USB longer cable!)
+  - rtsp://192.168.20.4:554/ch0_0.264
+  - https://motion-project.github.io/3.4.1/motion_guide.html#Options_Stream_Webcontrol
+  - <img src=http://yourmotionpc:yourstreamport/ border="0" width=500>
