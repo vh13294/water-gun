@@ -32,8 +32,12 @@ class Websocket {
      * @param {number} [value]
      */
     async moveServoPitch(value) {
+        const init = this.pitch.value
         this.pitch.value += value
-        this.pitch.value = this.clamp(this.pitch.value, this.pitch.min, this.pitch.max)
+        this.pitch.value = this.clamp(this.pitch)
+
+        if (init === this.pitch.value) return
+
         await callService(this.connection, "number", "set_value", {
             entity_id: "number.pitch_control",
             value: this.pitch.value,
@@ -44,8 +48,12 @@ class Websocket {
      * @param {number} [value]
      */
     async moveServoYaw(value) {
+        const init = this.pitch.yaw
         this.yaw.value += value
-        this.yaw.value = this.clamp(this.yaw.value, this.yaw.min, this.yaw.max)
+        this.yaw.value = this.clamp(this.yaw)
+
+        if (init === this.yaw.value) return
+
         await callService(this.connection, "number", "set_value", {
             entity_id: "number.yaw_control",
             value: this.yaw.value,
@@ -53,17 +61,15 @@ class Websocket {
     }
 
     /**
-     * @param {number} value
-     * @param {number} min
-     * @param {number} max
+     * @param {object} target
      */
-    clamp(value, min, max) {
-        if (value > max) {
-            return max
-        } else if (value < min) {
-            return min
+    clamp(target) {
+        if (target.value > target.max) {
+            return target.max
+        } else if (target.value < target.min) {
+            return target.min
         } else {
-            return value
+            return target.value
         }
     };
 }

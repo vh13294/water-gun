@@ -45,6 +45,7 @@
     position: relative;
     height: 500px;
     width: 500px;
+    touch-action: manipulation;
   }
 
   .d-pad .up {
