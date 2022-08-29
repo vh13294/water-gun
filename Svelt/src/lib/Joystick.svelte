@@ -1,26 +1,42 @@
 <script>
-  import { onMount } from "svelte";
-  import websocket from "./websocket";
+  // @ts-nocheck
 
-  onMount(() => {});
-  const increment = () => {
-    websocket.moveServoPitch();
-    websocket.moveServoYaw();
-  };
+  import websocket from "./websocket";
+  import { longPress } from "./longpress.js";
 </script>
 
 <div>
   <div class="d-pad">
-    <div class="up border">
+    <div
+      class="up border"
+      use:longPress
+      on:longpress={() => websocket.moveServoPitch(-10)}
+      on:mousedown={() => websocket.moveServoPitch(-5)}
+    >
       <div class="triangle-up" />
     </div>
-    <div class="right border">
-      <div class="triangle-right" />
-    </div>
-    <div class="down border">
+    <div
+      class="down border"
+      use:longPress
+      on:longpress={() => websocket.moveServoPitch(-10)}
+      on:mousedown={() => websocket.moveServoPitch(5)}
+    >
       <div class="triangle-down" />
     </div>
-    <div class="left border">
+    <div
+      class="right border"
+      use:longPress
+      on:longpress={() => websocket.moveServoYaw(-10)}
+      on:mousedown={() => websocket.moveServoYaw(-5)}
+    >
+      <div class="triangle-right" />
+    </div>
+    <div
+      class="left border"
+      use:longPress
+      on:longpress={() => websocket.moveServoYaw(-10)}
+      on:mousedown={() => websocket.moveServoYaw(5)}
+    >
       <div class="triangle-left" />
     </div>
   </div>
@@ -111,5 +127,43 @@
     top: 50%;
     left: 70%;
     transform: translate(-70%, -50%);
+  }
+
+  .triangle-left {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 30px solid transparent;
+    border-right: 40px solid rgb(205, 121, 222);
+    border-bottom: 30px solid transparent;
+    top: 50%;
+    left: 40%;
+    transform: translate(-40%, -50%);
+    transition: all 1s ease;
+  }
+
+  .d-pad .left:hover .triangle-left {
+    top: 50%;
+    left: 30%;
+    transform: translate(-30%, -50%);
+  }
+
+  .triangle-down {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    border-top: 40px solid rgb(104, 196, 120);
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    transition: all 1s ease;
+  }
+
+  .d-pad .down:hover .triangle-down {
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -70%);
   }
 </style>

@@ -7,6 +7,16 @@ import {
 class Websocket {
     constructor() {
         this.connection;
+        this.pitch = {
+            max: 70,
+            min: 20,
+            value: 0
+        }
+        this.yaw = {
+            max: 70,
+            min: -30,
+            value: 0
+        }
         this.connectHomeAssistant()
     }
 
@@ -18,19 +28,44 @@ class Websocket {
         this.connection = await createConnection({ auth });
     }
 
-    async moveServoPitch() {
+    /**
+     * @param {number} [value]
+     */
+    async moveServoPitch(value) {
+        this.pitch.value += value
+        this.pitch.value = this.clamp(this.pitch.value, this.pitch.min, this.pitch.max)
         await callService(this.connection, "number", "set_value", {
             entity_id: "number.pitch_control",
-            value: 70,
+            value: this.pitch.value,
         });
     }
 
-    async moveServoYaw() {
+    /**
+     * @param {number} [value]
+     */
+    async moveServoYaw(value) {
+        this.yaw.value += value
+        this.yaw.value = this.clamp(this.yaw.value, this.yaw.min, this.yaw.max)
         await callService(this.connection, "number", "set_value", {
             entity_id: "number.yaw_control",
-            value: 70,
+            value: this.yaw.value,
         });
     }
+
+    /**
+     * @param {number} value
+     * @param {number} min
+     * @param {number} max
+     */
+    clamp(value, min, max) {
+        if (value > max) {
+            return max
+        } else if (value < min) {
+            return min
+        } else {
+            return value
+        }
+    };
 }
 
 const websocket = new Websocket();
