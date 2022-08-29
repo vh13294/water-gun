@@ -1,0 +1,70 @@
+esphome:
+  name: d1
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "FryJTE813MPny4Htexjrn5sSdrEhiHv/bTWgLeZQGMY="
+
+ota:
+  password: "4dc66c90dd4af0a50b69e624cce5f179"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "D1 Fallback Hotspot"
+    password: "5JIlTa2R7wgf"
+
+captive_portal:
+    
+number:
+  - platform: template
+    name: Pitch Control
+    min_value: 20
+    max_value: 70
+    step: 1
+    set_action:
+      then:
+        - servo.write:
+            id: pitch_servo
+            level: !lambda 'return x / 100.0;'
+            
+  - platform: template
+    name: Yaw Control
+    min_value: -30
+    max_value: 70
+    step: 1
+    set_action:
+      then:
+        - servo.write:
+            id: yaw_servo
+            level: !lambda 'return x / 100.0;'
+
+# Example configuration entry
+servo:
+  - id: pitch_servo
+    output: pitch_pwm
+    
+  - id: yaw_servo
+    output: yaw_pwm
+
+# Example output platform
+output:
+  - platform: esp8266_pwm
+    id: pitch_pwm
+    pin: D4
+    frequency: 50 Hz
+    
+  - platform: esp8266_pwm
+    id: yaw_pwm
+    pin: D3
+    frequency: 50 Hz
