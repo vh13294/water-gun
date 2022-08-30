@@ -4,7 +4,7 @@ import {
     createLongLivedTokenAuth,
 } from "home-assistant-js-websocket";
 
-class Websocket {
+class WebSocket {
     constructor() {
         this.connection;
         this.pitch = {
@@ -88,6 +88,6 @@ class Websocket {
     };
 }
 
-const websocket = new Websocket();
+const webSocket = new WebSocket();
 
-export default websocket
+export default webSocket

@@ -1,12 +1,7 @@
 <script>
-  import Counter from "./lib/Counter.svelte";
-  import Camera from "./lib/Camera.svelte";
-  import Control from "./lib/Control.svelte";
-  import Joystick from "./lib/Joystick.svelte";
+  import Manual from "./page/Manual.svelte";
+  import Tensor from "./page/Tensor.svelte";
 </script>
 
-<main>
-  <Joystick />
-  <Camera />
-  <Control />
-</main>
+<!-- <Manual /> -->
+<Tensor />

@@ -2,7 +2,7 @@
   // @ts-nocheck
 
   import websocket from "./websocket";
-  import { longPress } from "./longpress.js";
+  import { longPress } from "./longpress";
 </script>
 
 <div class="d-pad">
@@ -48,6 +48,9 @@
     touch-action: manipulation;
     z-index: 1;
     opacity: 0.8;
+    top: 40%;
+    left: 1%;
+    transform: translate(-1%, -40%);
   }
 
   .d-pad .up {
