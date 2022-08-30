@@ -1,17 +1,17 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
-import { TensorFlowService } from './tensorflow/tensorflow.service';
+import { TensorFlowService } from './service/tensorflow.service';
+import { WebSocketService } from './service/websocket.service';
 
 @Controller()
 export class AppController {
   constructor(
-    private readonly appService: AppService,
     private readonly tensorFlowService: TensorFlowService,
+    private readonly webSocketService: WebSocketService,
   ) {}
 
   @Get()
   async getHello() {
-    return this.appService.getHello();
+    return 'Hello';
   }
 
   @Get('pose')
@@ -22,5 +22,10 @@ export class AppController {
   @Get('draw')
   async getPoseAndDraw() {
     await this.tensorFlowService.getPoseAndDraw();
+  }
+
+  @Get('move')
+  getMove() {
+    return this.webSocketService.moveServoPitch(20);
   }
 }

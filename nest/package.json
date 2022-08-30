@@ -28,9 +28,11 @@
     "@tensorflow-models/pose-detection": "^2.0.0",
     "@tensorflow/tfjs-node": "^3.20.0",
     "canvas": "^2.9.3",
+    "home-assistant-js-websocket": "^8.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.5.6"
+    "rxjs": "^7.5.6",
+    "ws": "^8.8.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.1.1",

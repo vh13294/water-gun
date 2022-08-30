@@ -48,7 +48,7 @@ class WebSocket {
      * @param {number} [value]
      */
     async moveServoYaw(value) {
-        const init = this.pitch.yaw
+        const init = this.yaw.value
         this.yaw.value += value
         this.yaw.value = this.clamp(this.yaw)
 
