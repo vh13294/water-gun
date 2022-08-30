@@ -18,9 +18,9 @@ export function longPress(node, duration = 50) {
     }
 
     node.addEventListener('mousedown', handleAction);
-    node.addEventListener('touchstart', handleAction);
+    node.addEventListener('touchstart', handleAction, { passive: true });
     node.addEventListener('mouseup', handleClear);
-    node.addEventListener('touchend', handleClear);
+    node.addEventListener('touchend', handleClear, { passive: true });
 
     return {
         destroy() {

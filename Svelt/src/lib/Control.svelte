@@ -1,7 +1,10 @@
 <script>
+  import websocket from "./websocket";
 </script>
 
-<div class="control" />
+<div class="control">
+  <button on:click={() => websocket.resetServos()}> Reset Servos </button>
+</div>
 
 <style>
   .control {

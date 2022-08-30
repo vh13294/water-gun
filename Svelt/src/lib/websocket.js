@@ -10,12 +10,14 @@ class Websocket {
         this.pitch = {
             max: 70,
             min: 20,
-            value: 0
+            value: 0,
+            id: 'number.pitch_control'
         }
         this.yaw = {
             max: 70,
             min: -30,
-            value: 0
+            value: 0,
+            id: 'number.yaw_control'
         }
         this.connectHomeAssistant()
     }
@@ -26,6 +28,7 @@ class Websocket {
             "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjMzEyMjExYmFmNmQ0NGM5Yjg4MGFkOTQ1OGQ1MGM3OCIsImlhdCI6MTY2MTc2MzM1NSwiZXhwIjoxOTc3MTIzMzU1fQ.BDyweFlSs1SCFJLr7u5ySTvZKRTbkaguTNf9L7JWHjM"
         );
         this.connection = await createConnection({ auth });
+        await this.resetServos()
     }
 
     /**
@@ -36,12 +39,9 @@ class Websocket {
         this.pitch.value += value
         this.pitch.value = this.clamp(this.pitch)
 
-        if (init === this.pitch.value) return
-
-        await callService(this.connection, "number", "set_value", {
-            entity_id: "number.pitch_control",
-            value: this.pitch.value,
-        });
+        if (init !== this.pitch.value) {
+            this.callServiceSetNumber(this.pitch)
+        }
     }
 
     /**
@@ -52,12 +52,26 @@ class Websocket {
         this.yaw.value += value
         this.yaw.value = this.clamp(this.yaw)
 
-        if (init === this.yaw.value) return
+        if (init !== this.yaw.value) {
+            this.callServiceSetNumber(this.yaw)
+        }
+    }
 
+    /**
+     * @param {object} target
+     */
+    async callServiceSetNumber(target) {
         await callService(this.connection, "number", "set_value", {
-            entity_id: "number.yaw_control",
-            value: this.yaw.value,
+            entity_id: target.id,
+            value: target.value,
         });
+    }
+
+    async resetServos() {
+        this.yaw.value = 20
+        this.pitch.value = 50
+        this.callServiceSetNumber(this.pitch)
+        this.callServiceSetNumber(this.yaw)
     }
 
     /**
