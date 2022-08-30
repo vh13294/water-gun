@@ -1,4 +1,5 @@
 import { SupportedModels, createDetector } from "@tensorflow-models/pose-detection";
+import '@tensorflow/tfjs-backend-cpu';
 import '@tensorflow/tfjs-backend-webgl';
 
 class TensorFlow {
