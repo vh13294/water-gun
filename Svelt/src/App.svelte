@@ -3,5 +3,5 @@
   import Tensor from "./page/Tensor.svelte";
 </script>
 
-<!-- <Manual /> -->
+<Manual />
 <Tensor />

@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+import { TaskService } from './service/task.service';
 import { TensorFlowService } from './service/tensorflow.service';
 import { WebSocketService } from './service/websocket.service';
 
@@ -7,6 +8,7 @@ export class AppController {
   constructor(
     private readonly tensorFlowService: TensorFlowService,
     private readonly webSocketService: WebSocketService,
+    private readonly taskService: TaskService,
   ) {}
 
   @Get()
@@ -27,5 +29,10 @@ export class AppController {
   @Get('move')
   getMove() {
     return this.webSocketService.moveServoPitch(20);
+  }
+
+  @Get('setAutoMode')
+  getSetAutoMode() {
+    return this.taskService.setAutoMode(true);
   }
 }

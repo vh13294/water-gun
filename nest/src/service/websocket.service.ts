@@ -66,6 +66,13 @@ export class WebSocketService implements OnModuleInit {
     });
   }
 
+  async randomServos() {
+    const randomPitch = this.randomInteger(this.pitch.min, this.pitch.max);
+    const randomYaw = this.randomInteger(this.yaw.min, this.yaw.max);
+    await this.moveServoPitch(randomPitch);
+    await this.moveServoYaw(randomYaw);
+  }
+
   async resetServos() {
     this.yaw.value = 20;
     this.pitch.value = 50;
@@ -73,7 +80,7 @@ export class WebSocketService implements OnModuleInit {
     this.callServiceSetNumber(this.yaw);
   }
 
-  clamp(target: Servo) {
+  private clamp(target: Servo) {
     if (target.value > target.max) {
       return target.max;
     } else if (target.value < target.min) {
@@ -81,5 +88,9 @@ export class WebSocketService implements OnModuleInit {
     } else {
       return target.value;
     }
+  }
+
+  private randomInteger(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }
