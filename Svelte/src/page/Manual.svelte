@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import Counter from "../lib/Counter.svelte";
   import Camera from "../lib/Camera.svelte";
   import Control from "../lib/Control.svelte";
