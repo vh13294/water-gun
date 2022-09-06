@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import {
   createDetector,
-  Pose,
+  Keypoint,
   PoseDetector,
   SupportedModels,
 } from '@tensorflow-models/pose-detection';
@@ -21,17 +21,14 @@ export class TensorFlowService implements OnModuleInit {
     console.log('TensorFlow Service Started');
   }
 
-  async getPose() {
-    const image = await this.downloadImage();
-    const tensor = tf.node.decodeJpeg(image.intArr);
-    return await this.detector.estimatePoses(tensor);
-  }
-
-  async getPoseAndDraw() {
+  async getPose(drawToFile = false) {
     const image = await this.downloadImage();
     const tensor = tf.node.decodeJpeg(image.intArr);
     const pose = await this.detector.estimatePoses(tensor);
-    await this.canvasDraw(pose[0], image.buffer);
+    if (drawToFile) {
+      this.canvasDraw(pose[0].keypoints, image.buffer);
+    }
+    return pose;
   }
 
   private async downloadImage() {
@@ -42,7 +39,7 @@ export class TensorFlowService implements OnModuleInit {
     };
   }
 
-  private async canvasDraw(pose: Pose, buffer: Buffer) {
+  private async canvasDraw(keypoints: Keypoint[], buffer: Buffer) {
     const image = await loadImage(buffer);
 
     const canvas = createCanvas(image.width, image.height);
@@ -51,7 +48,8 @@ export class TensorFlowService implements OnModuleInit {
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
 
     context.fillStyle = 'rgba(200, 0, 0, 0.5)';
-    pose.keypoints.forEach((element) => {
+
+    keypoints.forEach((element) => {
       context.fillRect(element.x, element.y, 50, 50);
     });
 

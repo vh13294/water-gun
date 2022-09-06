@@ -18,12 +18,7 @@ export class AppController {
 
   @Get('pose')
   getPose() {
-    return this.tensorFlowService.getPose();
-  }
-
-  @Get('draw')
-  async getPoseAndDraw() {
-    await this.tensorFlowService.getPoseAndDraw();
+    return this.tensorFlowService.getPose(true);
   }
 
   @Get('move')

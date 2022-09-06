@@ -50,8 +50,10 @@ export class TaskService {
 
     // open water valve,
 
-    // wait for water valve to open
+    // open valve for 1.5s
     await setTimeout(1500);
+
+    // close water valve
 
     this.webSocketService.resetServos();
   }
