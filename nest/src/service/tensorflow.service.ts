@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import {
   createDetector,
@@ -9,15 +8,17 @@ import {
 import * as tf from '@tensorflow/tfjs-node';
 import { createCanvas, loadImage } from 'canvas';
 import { writeFile } from 'fs/promises';
+import { CameraService } from './camera.service';
 
 @Injectable()
 export class TensorFlowService implements OnModuleInit {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly cameraService: CameraService) {}
 
   private detector: PoseDetector;
+
   async onModuleInit() {
     this.detector = await createDetector(SupportedModels.MoveNet);
-    console.log(`version tensorflow: ${tf.version['tfjs-core']}`);
+    console.log('TensorFlow Service Started');
   }
 
   async getPose() {
@@ -34,16 +35,10 @@ export class TensorFlowService implements OnModuleInit {
   }
 
   private async downloadImage() {
-    // accept jpg only 3 channels not 4 ***
-    const response = await this.httpService.axiosRef({
-      url: 'https://img.freepik.com/premium-photo/group-diverse-friends-taking-selfie-beach_53876-91925.jpg?w=2000',
-      method: 'GET',
-      responseType: 'arraybuffer',
-    });
-
+    const imageBuffer = await this.cameraService.downloadAndCropImage();
     return {
-      buffer: response.data,
-      intArr: new Uint8Array(response.data),
+      buffer: imageBuffer,
+      intArr: new Uint8Array(imageBuffer),
     };
   }
 
