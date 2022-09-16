@@ -3,7 +3,14 @@
 </script>
 
 <div class="control">
-  <button on:click={() => websocket.resetServos()}> Reset Servos </button>
+  <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
+    <button on:click={() => websocket.resetServos()}> Reset Servos </button>
+    <button> Shoot / Open Valve for 1s </button>
+    <button> Turn off valve </button>
+    <button> Turn on valve </button>
+    <button> Turn off pump </button>
+    <button> Turn on pump </button>
+  </div>
 </div>
 
 <style>
@@ -17,6 +24,11 @@
     transform: translate(-2%, -40%);
     z-index: 1;
     opacity: 0.6;
+  }
+
+  button {
+    font-size: 1.5rem;
+    margin: 10px;
   }
 
   @media only screen and (max-width: 1200px) {
