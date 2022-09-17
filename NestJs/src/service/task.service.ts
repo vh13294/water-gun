@@ -4,6 +4,9 @@ import { CameraService } from './camera.service';
 import { TensorFlowService } from './tensorflow.service';
 import { WebSocketService } from './websocket.service';
 import { setTimeout } from 'timers/promises';
+import { createCanvas, loadImage } from 'canvas';
+import { writeFile } from 'fs/promises';
+import { Keypoint } from '@tensorflow-models/pose-detection';
 
 @Injectable()
 export class TaskService {
@@ -31,34 +34,71 @@ export class TaskService {
     }
   }
 
+  async detectPoseAndShootTest() {
+    try {
+      for (let i = 1; i < 10; i++) {
+        const imageBuffer = await this.cameraService.downloadTest(
+          `public/${i}.jpg`,
+        );
+        const keypoints = await this.tensorFlowService.getPose(imageBuffer);
+        if (keypoints) {
+          this.canvasDraw(keypoints, imageBuffer);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   private async detectPoseAndShoot() {
-    const pose = await this.tensorFlowService.getPose();
-    const nosePoint = pose[0].keypoints.filter(
-      (keyPoint) => keyPoint.name === 'nose',
-    )[0];
-    console.log(nosePoint);
+    const imageBuffer = await this.cameraService.downloadAndCropImage();
+    const keypoints = await this.tensorFlowService.getPose(imageBuffer);
+    if (keypoints) {
+      const nosePoint = this.tensorFlowService.getSpecificKeyPoint(
+        'nose',
+        keypoints,
+      );
+      console.log(nosePoint);
 
-    const servos = this.cameraService.getServoValuesFromImagePoint(
-      nosePoint.x,
-      nosePoint.y,
-    );
-    this.webSocketService.moveServoPitch(servos.pitch);
-    this.webSocketService.moveServoYaw(servos.yaw);
+      const servos = this.cameraService.getServoValuesFromImagePoint(
+        nosePoint.x,
+        nosePoint.y,
+      );
+      this.webSocketService.moveServoPitch(servos.pitch);
+      this.webSocketService.moveServoYaw(servos.yaw);
 
-    // wait for servos to move to position
-    await setTimeout(500);
+      // wait for servos to move to position
+      await setTimeout(500);
 
-    // open water valve,
+      // open water valve,
 
-    // open valve for 1.5s
-    await setTimeout(1500);
+      // open valve for 1.5s
+      await setTimeout(1500);
 
-    // close water valve
+      // close water valve
 
-    this.webSocketService.resetServos();
+      this.webSocketService.resetServos();
+    }
   }
 
   setAutoMode(bool: boolean) {
     TaskService.isAutoMode = bool;
+  }
+
+  private async canvasDraw(keypoints: Keypoint[], buffer: Buffer) {
+    const image = await loadImage(buffer);
+
+    const canvas = createCanvas(image.width, image.height);
+    const context = canvas.getContext('2d');
+
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    context.fillStyle = 'rgba(200, 0, 0, 0.5)';
+
+    keypoints.forEach((element) => {
+      context.fillRect(element.x, element.y, 50, 50);
+    });
+
+    await writeFile('public/output.jpg', canvas.toBuffer());
   }
 }
