@@ -75,6 +75,7 @@ switch:
   - platform: gpio
     name: "Relay_1"
     pin: D8
+
   - platform: gpio
     name: "Relay_2"
     pin: D7

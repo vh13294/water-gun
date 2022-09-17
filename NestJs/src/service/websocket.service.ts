@@ -5,11 +5,11 @@ import {
   createConnection,
   createLongLivedTokenAuth,
 } from 'home-assistant-js-websocket';
+import { setTimeout } from 'timers/promises';
 
 export interface Servo {
   max: number;
   min: number;
-  value: number;
   id: string;
 }
 
@@ -19,13 +19,11 @@ export class WebSocketService implements OnModuleInit {
   static pitch: Servo = {
     max: 70,
     min: 20,
-    value: 0,
     id: 'number.pitch_control',
   };
   static yaw: Servo = {
     max: 70,
     min: -30,
-    value: 0,
     id: 'number.yaw_control',
   };
 
@@ -40,63 +38,47 @@ export class WebSocketService implements OnModuleInit {
   }
 
   async moveServoPitch(value: number) {
-    const init = WebSocketService.pitch.value;
-    WebSocketService.pitch.value += value;
-    WebSocketService.pitch.value = this.clamp(WebSocketService.pitch);
-
-    if (init !== WebSocketService.pitch.value) {
-      this.callServiceSetNumber(WebSocketService.pitch);
-    }
+    const pitch = this.clamp(WebSocketService.pitch, value);
+    await this.callServiceSetNumber(WebSocketService.pitch, pitch);
   }
 
   async moveServoYaw(value: number) {
-    const init = WebSocketService.yaw.value;
-    WebSocketService.yaw.value += value;
-    WebSocketService.yaw.value = this.clamp(WebSocketService.yaw);
-
-    if (init !== WebSocketService.yaw.value) {
-      this.callServiceSetNumber(WebSocketService.yaw);
-    }
+    const yaw = this.clamp(WebSocketService.yaw, value);
+    await this.callServiceSetNumber(WebSocketService.yaw, yaw);
   }
 
-  async callServiceSetNumber(target: Servo) {
+  async moveServos(yaw: number, pitch: number) {
+    await this.moveServoYaw(yaw);
+    await this.moveServoPitch(pitch);
+    // wait for servos to move in place
+    await setTimeout(300);
+  }
+
+  async callServiceSetNumber(target: Servo, value: number) {
     await callService(WebSocketService.connection, 'number', 'set_value', {
       entity_id: target.id,
-      value: target.value,
+      value: value,
     });
   }
 
-  async randomServos() {
-    const randomPitch = this.randomInteger(
-      WebSocketService.pitch.min,
-      WebSocketService.pitch.max,
-    );
-    const randomYaw = this.randomInteger(
-      WebSocketService.yaw.min,
-      WebSocketService.yaw.max,
-    );
-    await this.moveServoPitch(randomPitch);
-    await this.moveServoYaw(randomYaw);
+  async releaseWaterValve(durationMilliSecond: number) {
+    // open water valve,
+    // open valve for 1.5s
+    await setTimeout(durationMilliSecond);
+    // close water valve
   }
 
   async resetServos() {
-    WebSocketService.yaw.value = 20;
-    WebSocketService.pitch.value = 50;
-    this.callServiceSetNumber(WebSocketService.pitch);
-    this.callServiceSetNumber(WebSocketService.yaw);
+    await this.moveServos(20, 50);
   }
 
-  private clamp(target: Servo) {
-    if (target.value > target.max) {
+  private clamp(target: Servo, value: number) {
+    if (value > target.max) {
       return target.max;
-    } else if (target.value < target.min) {
+    } else if (value < target.min) {
       return target.min;
     } else {
-      return target.value;
+      return value;
     }
-  }
-
-  private randomInteger(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }

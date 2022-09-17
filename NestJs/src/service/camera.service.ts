@@ -58,9 +58,11 @@ export class CameraService implements OnModuleInit {
   }
 
   getServoValuesFromImagePoint(x: number, y: number) {
+    const normalizedPitch = y * CameraService.normalizedImageFactor.pitch;
+    const normalizedYaw = x * CameraService.normalizedImageFactor.yaw;
     return {
-      pitch: x * CameraService.normalizedImageFactor.pitch,
-      yaw: y * CameraService.normalizedImageFactor.yaw,
+      pitch: WebSocketService.pitch.max - normalizedPitch,
+      yaw: WebSocketService.yaw.max - normalizedYaw,
     };
   }
 }

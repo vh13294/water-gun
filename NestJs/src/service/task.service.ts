@@ -3,7 +3,6 @@ import { Interval } from '@nestjs/schedule';
 import { CameraService } from './camera.service';
 import { TensorFlowService } from './tensorflow.service';
 import { WebSocketService } from './websocket.service';
-import { setTimeout } from 'timers/promises';
 import { createCanvas, loadImage } from 'canvas';
 import { writeFile } from 'fs/promises';
 import { Keypoint } from '@tensorflow-models/pose-detection';
@@ -19,32 +18,44 @@ export class TaskService {
     private readonly cameraService: CameraService,
   ) {}
 
-  @Interval(10000)
+  @Interval(5000)
   async handleInterval() {
-    console.log('Called every 10 seconds');
-    if (TaskService.isAutoMode && !TaskService.isProcessing) {
-      TaskService.isProcessing = true;
-      try {
-        this.detectPoseAndShoot();
-      } catch (error) {
-        console.log(error);
-      } finally {
-        TaskService.isProcessing = false;
+    // console.log('Called every 5 seconds');
+    if (TaskService.isAutoMode) {
+      if (!TaskService.isProcessing) {
+        TaskService.isProcessing = true;
+        try {
+          this.detectPoseAndShoot();
+        } catch (error) {
+          console.log(error);
+        } finally {
+          TaskService.isProcessing = false;
+        }
+      } else {
+        console.log('Detection process not yet complete');
       }
     }
   }
 
-  async detectPoseAndShootTest() {
+  async detectPoseAndShootTest(fileId: string) {
     try {
-      for (let i = 1; i < 10; i++) {
-        const imageBuffer = await this.cameraService.downloadTest(
-          `public/${i}.jpg`,
+      console.time('water jet');
+      const imageBuffer = await this.cameraService.downloadTest(
+        `public/${fileId}.jpg`,
+      );
+      console.log('image downloaded');
+      const keypoints = await this.tensorFlowService.getPose(imageBuffer);
+      if (keypoints) {
+        console.log('pos detected');
+        this.canvasDraw(keypoints, imageBuffer);
+        const nosePoint = this.tensorFlowService.getSpecificKeyPoint(
+          'nose',
+          keypoints,
         );
-        const keypoints = await this.tensorFlowService.getPose(imageBuffer);
-        if (keypoints) {
-          this.canvasDraw(keypoints, imageBuffer);
-        }
+        console.log(`nose Point: ${nosePoint.x}, ${nosePoint.y}`);
+        await this.moveToTargetAndOpenValve(nosePoint);
       }
+      console.timeEnd('water jet');
     } catch (error) {
       console.log(error);
     }
@@ -58,27 +69,20 @@ export class TaskService {
         'nose',
         keypoints,
       );
-      console.log(nosePoint);
-
-      const servos = this.cameraService.getServoValuesFromImagePoint(
-        nosePoint.x,
-        nosePoint.y,
-      );
-      this.webSocketService.moveServoPitch(servos.pitch);
-      this.webSocketService.moveServoYaw(servos.yaw);
-
-      // wait for servos to move to position
-      await setTimeout(500);
-
-      // open water valve,
-
-      // open valve for 1.5s
-      await setTimeout(1500);
-
-      // close water valve
-
-      this.webSocketService.resetServos();
+      this.moveToTargetAndOpenValve(nosePoint);
     }
+  }
+
+  async moveToTargetAndOpenValve(nosePoint: Keypoint) {
+    const servos = this.cameraService.getServoValuesFromImagePoint(
+      nosePoint.x,
+      nosePoint.y,
+    );
+    console.log(`move to target ${servos.yaw}, ${servos.pitch}`);
+    await this.webSocketService.moveServos(servos.yaw, servos.pitch);
+    await this.webSocketService.releaseWaterValve(1500);
+    // await this.webSocketService.resetServos();
+    console.log('servo pos reset');
   }
 
   setAutoMode(bool: boolean) {

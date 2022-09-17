@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { TaskService } from './service/task.service';
 
 @Controller()
@@ -10,9 +10,9 @@ export class AppController {
     return 'Hello';
   }
 
-  @Get('test')
-  getTest() {
-    return this.taskService.detectPoseAndShootTest();
+  @Get('test/:id')
+  getTest(@Param('id') id: string) {
+    return this.taskService.detectPoseAndShootTest(id);
   }
 
   @Get('setAutoMode')
