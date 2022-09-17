@@ -4,6 +4,7 @@
         "keypoints",
         "longpress",
         "nestjs",
+        "onlongpress",
         "sveltejs",
         "tfjs"
     ]

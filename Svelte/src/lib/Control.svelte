@@ -1,15 +1,39 @@
 <script lang="ts">
   import websocket from "./websocket";
+  import nest from "./nest";
 </script>
 
 <div class="control">
   <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
     <button on:click={() => websocket.resetServos()}> Reset Servos </button>
-    <button> Shoot / Open Valve for 1s </button>
-    <button> Turn off valve </button>
-    <button> Turn on valve </button>
-    <button> Turn off pump </button>
-    <button> Turn on pump </button>
+
+    <button on:click={() => websocket.releaseValve(1500)}> Shoot </button>
+
+    <button on:click={() => websocket.changeValveState(false)}>
+      Turn off valve
+    </button>
+
+    <button on:click={() => websocket.changeValveState(true)}>
+      Turn on valve
+    </button>
+
+    <button on:click={() => websocket.changePumpState(false)}>
+      Turn off pump
+    </button>
+
+    <button on:click={() => websocket.changePumpState(true)}>
+      Turn on pump
+    </button>
+
+    <button on:click={() => websocket.turnOffAllRelays()}>
+      Turn off All relays
+    </button>
+
+    <button on:click={() => nest.setAutoMode(true)}> Turn on Auto Mode </button>
+
+    <button on:click={() => nest.setAutoMode(false)}>
+      Turn off Auto Mode
+    </button>
   </div>
 </div>
 

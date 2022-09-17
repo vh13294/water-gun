@@ -1,6 +1,4 @@
 <script lang="ts">
-  // @ts-nocheck
-
   import websocket from "./websocket";
   import { longPress } from "./longpress";
 </script>

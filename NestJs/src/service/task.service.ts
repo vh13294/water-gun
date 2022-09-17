@@ -69,7 +69,7 @@ export class TaskService {
         'nose',
         keypoints,
       );
-      this.moveToTargetAndOpenValve(nosePoint);
+      await this.moveToTargetAndOpenValve(nosePoint);
     }
   }
 

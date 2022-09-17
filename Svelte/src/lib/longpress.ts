@@ -1,4 +1,5 @@
-export function longPress(node: HTMLDivElement, duration = 50) {
+export function longPress(node: HTMLDivElement) {
+  const duration = 50;
   let timer: NodeJS.Timeout;
 
   const handleAction = () => {

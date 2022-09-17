@@ -27,6 +27,11 @@ class WebSocket {
     id: "number.yaw_control",
   };
 
+  private switches = {
+    relayOneId: "switch.relay_1",
+    relayTwoId: "switch.relay_2",
+  };
+
   constructor() {
     this.connectHA();
   }
@@ -61,10 +66,50 @@ class WebSocket {
     }
   }
 
+  async releaseValve(durationMilliSecond: number) {
+    this.changeValveState(true);
+    setTimeout(() => {
+      this.changeValveState(false);
+    }, durationMilliSecond);
+  }
+
+  async changeValveState(state: boolean) {
+    if (state) {
+      this.callServiceSwitchOn(this.switches.relayOneId);
+    } else {
+      this.callServiceSwitchOff(this.switches.relayOneId);
+    }
+  }
+
+  async changePumpState(state: boolean) {
+    if (state) {
+      this.callServiceSwitchOn(this.switches.relayTwoId);
+    } else {
+      this.callServiceSwitchOff(this.switches.relayTwoId);
+    }
+  }
+
+  async turnOffAllRelays() {
+    this.changePumpState(false);
+    this.changeValveState(false);
+  }
+
   async callServiceSetNumber(target: Servo) {
     await callService(this.connection, "number", "set_value", {
       entity_id: target.id,
       value: target.value,
+    });
+  }
+
+  async callServiceSwitchOn(switchId: string) {
+    await callService(this.connection, "switch", "turn_on", {
+      entity_id: switchId,
+    });
+  }
+
+  async callServiceSwitchOff(switchId: string) {
+    await callService(this.connection, "switch", "turn_off", {
+      entity_id: switchId,
     });
   }
 
