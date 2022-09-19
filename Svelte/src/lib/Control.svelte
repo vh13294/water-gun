@@ -49,7 +49,7 @@
   .control {
     width: 400px;
     height: 500px;
-    background-color: rgb(215, 246, 250);
+    background-color: rgba(215, 246, 250, 0.073);
     position: absolute;
     top: 40%;
     right: 2%;
@@ -68,6 +68,7 @@
       transform: scale(0.7);
       transform-origin: top right;
       top: 5%;
+      width: 200px;
     }
   }
 
