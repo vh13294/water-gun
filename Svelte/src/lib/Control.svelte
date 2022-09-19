@@ -1,6 +1,10 @@
 <script lang="ts">
   import websocket from "./websocket";
-  import nest from "./nest";
+
+  let autoModeState = false;
+  websocket.autoModeState.subscribe((value) => {
+    autoModeState = value;
+  });
 </script>
 
 <div class="control">
@@ -29,11 +33,15 @@
       Turn off All relays
     </button>
 
-    <button on:click={() => nest.setAutoMode(true)}> Turn on Auto Mode </button>
+    <button on:click={() => websocket.setAutoMode(true)}>
+      Turn on Auto Mode
+    </button>
 
-    <button on:click={() => nest.setAutoMode(false)}>
+    <button on:click={() => websocket.setAutoMode(false)}>
       Turn off Auto Mode
     </button>
+
+    <h3>Auto Mode State: {autoModeState}</h3>
   </div>
 </div>
 
@@ -61,5 +69,9 @@
       transform-origin: top right;
       top: 5%;
     }
+  }
+
+  h3 {
+    color: black;
   }
 </style>

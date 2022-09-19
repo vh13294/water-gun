@@ -14,14 +14,4 @@ export class AppController {
   getTest(@Param('id') id: string) {
     return this.taskService.detectPoseAndShootTest(id);
   }
-
-  @Get('setAutoModeOn')
-  getSetAutoModeOn() {
-    return this.taskService.setAutoMode(true);
-  }
-
-  @Get('setAutoModeOff')
-  getSetAutoModeOff() {
-    return this.taskService.setAutoMode(false);
-  }
 }

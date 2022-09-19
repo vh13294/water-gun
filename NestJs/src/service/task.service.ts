@@ -9,7 +9,7 @@ import { Keypoint } from '@tensorflow-models/pose-detection';
 
 @Injectable()
 export class TaskService {
-  private static isAutoMode = false;
+  static isAutoMode = false;
   private static isProcessing = false;
 
   constructor(

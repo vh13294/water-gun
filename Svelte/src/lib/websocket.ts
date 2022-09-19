@@ -3,7 +3,9 @@ import {
   Connection,
   createConnection,
   createLongLivedTokenAuth,
+  subscribeEntities,
 } from "home-assistant-js-websocket";
+import { writable } from "svelte/store";
 
 interface Servo {
   max: number;
@@ -27,10 +29,13 @@ class WebSocket {
     id: "number.yaw_control",
   };
 
-  private switches = {
-    relayOneId: "switch.relay_1",
-    relayTwoId: "switch.relay_2",
+  private switchIds = {
+    relayOne: "switch.relay_1",
+    relayTwo: "switch.relay_2",
+    autoMode: "switch.auto_mode_active",
   };
+
+  public autoModeState = writable(false);
 
   constructor() {
     this.connectHA();
@@ -44,6 +49,7 @@ class WebSocket {
     this.connection = await createConnection({ auth });
     console.log("HA Init");
     await this.resetServos();
+    await this.subscribeAutoMode();
   }
 
   async moveServoPitch(value: number) {
@@ -66,6 +72,25 @@ class WebSocket {
     }
   }
 
+  async subscribeAutoMode() {
+    subscribeEntities(this.connection, (ent) => {
+      const autoModeState = ent["switch.auto_mode_active"].state;
+      if (autoModeState === "on") {
+        this.autoModeState.set(true);
+      } else if (autoModeState === "off") {
+        this.autoModeState.set(false);
+      }
+    });
+  }
+
+  async setAutoMode(state: boolean) {
+    if (state) {
+      this.callServiceSwitchOn(this.switchIds.autoMode);
+    } else {
+      this.callServiceSwitchOff(this.switchIds.autoMode);
+    }
+  }
+
   async releaseValve(durationMilliSecond: number) {
     this.changeValveState(true);
     setTimeout(() => {
@@ -75,17 +100,17 @@ class WebSocket {
 
   async changeValveState(state: boolean) {
     if (state) {
-      this.callServiceSwitchOn(this.switches.relayOneId);
+      this.callServiceSwitchOn(this.switchIds.relayOne);
     } else {
-      this.callServiceSwitchOff(this.switches.relayOneId);
+      this.callServiceSwitchOff(this.switchIds.relayOne);
     }
   }
 
   async changePumpState(state: boolean) {
     if (state) {
-      this.callServiceSwitchOn(this.switches.relayTwoId);
+      this.callServiceSwitchOn(this.switchIds.relayTwo);
     } else {
-      this.callServiceSwitchOff(this.switches.relayTwoId);
+      this.callServiceSwitchOff(this.switchIds.relayTwo);
     }
   }
 

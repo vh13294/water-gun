@@ -4,8 +4,10 @@ import {
   Connection,
   createConnection,
   createLongLivedTokenAuth,
+  subscribeEntities,
 } from 'home-assistant-js-websocket';
 import { setTimeout } from 'timers/promises';
+import { TaskService } from './task.service';
 
 export interface Servo {
   max: number;
@@ -35,6 +37,18 @@ export class WebSocketService implements OnModuleInit {
     WebSocketService.connection = await createConnection({ auth });
     console.log('HomeAssistant Service started');
     await this.resetServos();
+    this.subscribeEntities();
+  }
+
+  subscribeEntities() {
+    subscribeEntities(WebSocketService.connection, (ent) => {
+      const autoModeState = ent['switch.auto_mode_active'].state;
+      if (autoModeState === 'on') {
+        TaskService.isAutoMode = true;
+      } else if (autoModeState === 'off') {
+        TaskService.isAutoMode = false;
+      }
+    });
   }
 
   async moveServoPitch(value: number) {
