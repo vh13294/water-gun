@@ -65,7 +65,7 @@ export class WebSocketService implements OnModuleInit {
     await this.moveServoYaw(yaw);
     await this.moveServoPitch(pitch);
     // wait for servos to move in place
-    await setTimeout(300);
+    await setTimeout(50);
   }
 
   async callServiceSetNumber(target: Servo, value: number) {

@@ -2,6 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Servo, WebSocketService } from './websocket.service';
 import Jimp from 'jimp';
+import MjpegDecoder from 'mjpeg-decoder';
 
 // interface
 
@@ -27,7 +28,9 @@ export class CameraService implements OnModuleInit {
 
   async downloadImage() {
     const url = this.configService.get('SNAP_SHOT_URL');
-    return await Jimp.read(url);
+    const decoder = MjpegDecoder.decoderForSnapshot(url);
+    const frame = await decoder.takeSnapshot();
+    return await Jimp.read(frame);
   }
 
   cropImage(img: Jimp) {

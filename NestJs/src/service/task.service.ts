@@ -81,7 +81,7 @@ export class TaskService {
     console.log(`move to target ${servos.yaw}, ${servos.pitch}`);
     await this.webSocketService.moveServos(servos.yaw, servos.pitch);
     await this.webSocketService.releaseWaterValve(1500);
-    // await this.webSocketService.resetServos();
+    await this.webSocketService.resetServos();
     console.log('servo pos reset');
   }
 

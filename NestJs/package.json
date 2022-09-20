@@ -32,6 +32,7 @@
     "canvas": "^2.9.3",
     "home-assistant-js-websocket": "^8.0.0",
     "jimp": "^0.16.1",
+    "mjpeg-decoder": "^1.0.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.6",

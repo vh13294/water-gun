@@ -11,8 +11,18 @@
 -n Run in non-daemon mode.
 -s Run in setup mode.
 
-- motion -c motion.conf -n
+- motion -c motion.conf
+
+service motion stop
 
 # SMB Server
 
 https://pimylifeup.com/raspberry-pi-samba/
+
+# Start at boot
+
+sudo apt install cron
+
+crontab -e
+
+@reboot sleep 30 && motion -c /home/rock/motion/motion.conf
