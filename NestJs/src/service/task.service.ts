@@ -25,6 +25,7 @@ export class TaskService {
     if (TaskService.isAutoMode) {
       if (!TaskService.isProcessing) {
         TaskService.isProcessing = true;
+        console.log('processing!');
         try {
           await this.detectPoseAndShoot();
         } catch (error) {

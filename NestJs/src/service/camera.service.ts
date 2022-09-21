@@ -44,7 +44,7 @@ export class CameraService implements OnModuleInit {
   async downloadAndCropImage() {
     const img = await this.downloadImage();
     const croppedImg = this.cropImage(img);
-    return croppedImg.getBufferAsync(Jimp.MIME_JPEG);
+    return await croppedImg.getBufferAsync(Jimp.MIME_JPEG);
   }
 
   getNormalizeImageFactor(pitch: Servo, yaw: Servo) {

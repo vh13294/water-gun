@@ -1,6 +1,8 @@
 <div class="camera">
+  <!-- src="http://192.168.20.103:8083/stream.mjpg" -->
+  <!-- src="http://localhost:8083/stream.mjpg" -->
   <img
-    src="http://192.168.20.103:8083/stream.mjpg"
+    src="http://localhost:8083/stream.mjpg"
     width="960"
     height="540"
     alt="camera"

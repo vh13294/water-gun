@@ -1,0 +1,23 @@
+version: "3"
+services:
+  # homeassistant:
+  #   container_name: homeassistant
+  #   image: "ghcr.io/home-assistant/home-assistant:stable"
+  #   volumes:
+  #     - ./config/:/config
+  #     - /etc/localtime:/etc/localtime:ro
+  #   restart: unless-stopped
+  #   privileged: true
+  #   network_mode: host
+
+  nest-server:
+    build: ./NestJs
+    image: nest
+    ports:
+      - "3015:3000"
+
+  svelte-server:
+    build: ./Svelte
+    image: svelte
+    ports:
+      - "3010:80"
