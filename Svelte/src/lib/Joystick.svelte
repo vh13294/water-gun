@@ -7,32 +7,32 @@
   <div
     class="up border"
     use:longPress
-    on:longpress={() => websocket.moveServoPitch(10)}
-    on:click={() => websocket.moveServoPitch(5)}
+    on:longpress={() => websocket.moveServoPitch(5)}
+    on:click={() => websocket.moveServoPitch(1)}
   >
     <div class="triangle-up" />
   </div>
   <div
     class="down border"
     use:longPress
-    on:longpress={() => websocket.moveServoPitch(-10)}
-    on:click={() => websocket.moveServoPitch(-5)}
+    on:longpress={() => websocket.moveServoPitch(-5)}
+    on:click={() => websocket.moveServoPitch(-1)}
   >
     <div class="triangle-down" />
   </div>
   <div
     class="right border"
     use:longPress
-    on:longpress={() => websocket.moveServoYaw(-10)}
-    on:click={() => websocket.moveServoYaw(-5)}
+    on:longpress={() => websocket.moveServoYaw(-5)}
+    on:click={() => websocket.moveServoYaw(-1)}
   >
     <div class="triangle-right" />
   </div>
   <div
     class="left border"
     use:longPress
-    on:longpress={() => websocket.moveServoYaw(10)}
-    on:click={() => websocket.moveServoYaw(5)}
+    on:longpress={() => websocket.moveServoYaw(5)}
+    on:click={() => websocket.moveServoYaw(1)}
   >
     <div class="triangle-left" />
   </div>

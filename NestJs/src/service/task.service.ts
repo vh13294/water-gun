@@ -19,34 +19,31 @@ export class TaskService {
     private readonly cameraService: CameraService,
   ) {}
 
-  @Interval(5000)
+  @Interval(10000)
   async handleInterval() {
-    // console.log('Called every 5 seconds');
+    // console.log('Called every 10 seconds');
     if (TaskService.isAutoMode) {
       if (!TaskService.isProcessing) {
         TaskService.isProcessing = true;
         try {
-          this.detectPoseAndShoot();
+          await this.detectPoseAndShoot();
         } catch (error) {
           console.log(error);
         } finally {
           TaskService.isProcessing = false;
         }
       } else {
-        console.log('Detection process not yet complete');
+        console.warn('Detection process not yet complete');
       }
     }
   }
 
   async detectPoseAndShootTest(fileId: string) {
     try {
-      await this.webSocketService.resetServos();
-      await this.webSocketService.releaseWaterValve(1500);
       console.time('water jet');
-      const imageBuffer = await this.cameraService.downloadAndCropImage();
-      // const imageBuffer = await this.cameraService.downloadTest(
-      //   `public/${fileId}.jpg`,
-      // );
+      const imageBuffer = await this.cameraService.downloadTest(
+        `public/${fileId}.jpg`,
+      );
       console.log('image downloaded');
       const keypoints = await this.tensorFlowService.getPose(imageBuffer);
       if (keypoints) {
@@ -56,7 +53,6 @@ export class TaskService {
           'nose',
           keypoints,
         );
-        console.log(`nose Point: ${nosePoint.x}, ${nosePoint.y}`);
         await this.moveToTargetAndOpenValve(nosePoint);
       }
       console.timeEnd('water jet');
@@ -82,11 +78,9 @@ export class TaskService {
       nosePoint.x,
       nosePoint.y,
     );
-    console.log(`move to target ${servos.yaw}, ${servos.pitch}`);
     await this.webSocketService.moveServos(servos.yaw, servos.pitch);
-    // await this.webSocketService.releaseWaterValve(1500);
-    // await this.webSocketService.resetServos();
-    console.log('servo pos reset');
+    await this.webSocketService.releaseWaterValve(3000);
+    await this.webSocketService.resetServos();
   }
 
   setAutoMode(bool: boolean) {

@@ -20,7 +20,7 @@ export class WebSocketService implements OnModuleInit {
   static connection: Connection;
   static pitch: Servo = {
     max: 70,
-    min: 20,
+    min: 35,
     id: 'number.pitch_control',
   };
   static yaw: Servo = {

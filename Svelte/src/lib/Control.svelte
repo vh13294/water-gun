@@ -42,6 +42,7 @@
     </button>
 
     <h3>Auto Mode State: {autoModeState}</h3>
+    <button on:click={() => websocket.printServoPos()}>Print servo pos</button>
   </div>
 </div>
 
@@ -70,9 +71,5 @@
       top: 5%;
       width: 200px;
     }
-  }
-
-  h3 {
-    color: black;
   }
 </style>

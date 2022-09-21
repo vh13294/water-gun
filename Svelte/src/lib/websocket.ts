@@ -145,6 +145,10 @@ class WebSocket {
     this.callServiceSetNumber(this.yaw);
   }
 
+  printServoPos() {
+    console.log(`yaw: ${this.yaw.value}, pitch: ${this.pitch.value}`);
+  }
+
   private clamp(target: Servo) {
     if (target.value > target.max) {
       return target.max;
