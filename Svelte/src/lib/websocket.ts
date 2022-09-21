@@ -24,7 +24,7 @@ class WebSocket {
   };
   private yaw: Servo = {
     max: 70,
-    min: -30,
+    min: -40,
     value: 0,
     id: "number.yaw_control",
   };
@@ -139,7 +139,7 @@ class WebSocket {
   }
 
   async resetServos() {
-    this.yaw.value = 20;
+    this.yaw.value = 15;
     this.pitch.value = 50;
     this.callServiceSetNumber(this.pitch);
     this.callServiceSetNumber(this.yaw);

@@ -25,7 +25,7 @@ export class WebSocketService implements OnModuleInit {
   };
   static yaw: Servo = {
     max: 70,
-    min: -30,
+    min: -40,
     id: 'number.yaw_control',
   };
 
@@ -83,7 +83,7 @@ export class WebSocketService implements OnModuleInit {
   }
 
   async resetServos() {
-    await this.moveServos(20, 50);
+    await this.moveServos(15, 50);
   }
 
   private clamp(target: Servo, value: number) {

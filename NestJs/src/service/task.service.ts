@@ -6,6 +6,7 @@ import { WebSocketService } from './websocket.service';
 import { createCanvas, loadImage } from 'canvas';
 import { writeFile } from 'fs/promises';
 import { Keypoint } from '@tensorflow-models/pose-detection';
+import Jimp from 'jimp';
 
 @Injectable()
 export class TaskService {
@@ -39,10 +40,13 @@ export class TaskService {
 
   async detectPoseAndShootTest(fileId: string) {
     try {
+      await this.webSocketService.resetServos();
+      await this.webSocketService.releaseWaterValve(1500);
       console.time('water jet');
-      const imageBuffer = await this.cameraService.downloadTest(
-        `public/${fileId}.jpg`,
-      );
+      const imageBuffer = await this.cameraService.downloadAndCropImage();
+      // const imageBuffer = await this.cameraService.downloadTest(
+      //   `public/${fileId}.jpg`,
+      // );
       console.log('image downloaded');
       const keypoints = await this.tensorFlowService.getPose(imageBuffer);
       if (keypoints) {
@@ -61,7 +65,7 @@ export class TaskService {
     }
   }
 
-  private async detectPoseAndShoot() {
+  async detectPoseAndShoot() {
     const imageBuffer = await this.cameraService.downloadAndCropImage();
     const keypoints = await this.tensorFlowService.getPose(imageBuffer);
     if (keypoints) {
@@ -80,13 +84,19 @@ export class TaskService {
     );
     console.log(`move to target ${servos.yaw}, ${servos.pitch}`);
     await this.webSocketService.moveServos(servos.yaw, servos.pitch);
-    await this.webSocketService.releaseWaterValve(1500);
-    await this.webSocketService.resetServos();
+    // await this.webSocketService.releaseWaterValve(1500);
+    // await this.webSocketService.resetServos();
     console.log('servo pos reset');
   }
 
   setAutoMode(bool: boolean) {
     TaskService.isAutoMode = bool;
+  }
+
+  async takeSnapShot() {
+    const imageBuffer = await this.cameraService.downloadImage();
+    const jimpImg = await imageBuffer.getBufferAsync(Jimp.MIME_JPEG);
+    this.canvasDraw([], jimpImg);
   }
 
   private async canvasDraw(keypoints: Keypoint[], buffer: Buffer) {

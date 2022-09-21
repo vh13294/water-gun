@@ -4,7 +4,9 @@
 - Install ubuntu
 - Install home assistant
 - Link with ESPHome
+- WN823N RTL8192EU
 - Allow websocket api
+- sudo ifconfig wlan0 down (use USB dongle)
 
 2. Micro-controller
 

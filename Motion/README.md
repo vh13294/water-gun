@@ -26,3 +26,11 @@ sudo apt install cron
 crontab -e
 
 @reboot sleep 30 && motion -c /home/rock/motion/motion.conf
+
+# Driver
+
+Some only support one usb at a time.
+Some only support usb 2.0 instead of 3.0
+
+sudo apt-get install hwinfo
+hwinfo --usb

@@ -47,7 +47,7 @@ number:
 
   - platform: template
     name: Yaw Control
-    min_value: -30
+    min_value: -40
     max_value: 70
     step: 1
     set_action:

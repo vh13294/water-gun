@@ -14,4 +14,14 @@ export class AppController {
   getTest(@Param('id') id: string) {
     return this.taskService.detectPoseAndShootTest(id);
   }
+
+  @Get('shoot')
+  shoot() {
+    return this.taskService.detectPoseAndShoot();
+  }
+
+  @Get('snapshot')
+  snapshot() {
+    return this.taskService.takeSnapShot();
+  }
 }
