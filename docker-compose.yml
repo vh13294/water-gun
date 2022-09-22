@@ -21,3 +21,11 @@ services:
     image: svelte
     ports:
       - "3010:80"
+
+  camera-server:
+    build: ./Mjpg-streamer
+    image: mjpg
+    devices:
+      - "/dev/video0:/dev/video0"
+    ports:
+      - "8080:8080"

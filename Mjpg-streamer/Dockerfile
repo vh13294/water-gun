@@ -9,10 +9,11 @@ RUN apt-get install -y \
     git
 
 # Create app directory
-WORKDIR /usr/src/streamer
+WORKDIR /usr/streamer
 
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY ./build/* ./
+COPY ./build ./
+COPY ./entrypoint.sh ./entrypoint.sh
 
 RUN make
 RUN make install
