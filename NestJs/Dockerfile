@@ -1,21 +1,21 @@
 FROM ubuntu:22.04
 
-RUN apt update -y
-RUN apt upgrade -y
-RUN apt install -y \
+RUN apt-get update -y
+RUN apt-get upgrade -y
+RUN apt-get install -y \
     build-essential \
     curl \
     libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev \
     wget python3 make gcc libc6-dev 
 
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-RUN apt install -y nodejs
+RUN apt-get install -y nodejs
 
 # Create app directory
 WORKDIR /usr/src/app
 
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY --chown=node:node package*.json ./
+COPY package*.json ./
 
 # Install app dependencies
 RUN npm i --legacy-peer-deps
