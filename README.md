@@ -13,17 +13,13 @@
 - ESP32
 - Flash ESPHome
 
-3. Camera module
-
-- Configure camera stream using https://motion-project.github.io/
-
-4. Tensor Flow
+3. Tensor Flow
 
 - npm i @tensorflow/tfjs @tensorflow/tfjs-backend-cpu @tensorflow/tfjs-backend-webgl @tensorflow/tfjs-converter @tensorflow/tfjs-core @tensorflow-models/pose-detection
 
 - https://github.com/tensorflow/tfjs-models
 
-5. Portainer
+4. Portainer
 
 docker run -d -p 8000:8000 -p 9000:9000 -p 9443:9443 \
  --name=portainer --restart=always \
