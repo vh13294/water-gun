@@ -1,6 +1,7 @@
 <div class="camera">
+  <!-- USE ROUTER IP -->
   <img
-    src="http://localhost:8080/?action=stream"
+    src="http://192.168.20.8:8080/?action=stream"
     width="960"
     height="540"
     alt="camera"
