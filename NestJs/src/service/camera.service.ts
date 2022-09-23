@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Servo, WebSocketService } from './websocket.service';
 import Jimp from 'jimp';
 import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 // interface
 
@@ -27,10 +28,11 @@ export class CameraService implements OnModuleInit {
     const url = this.configService.get('SNAP_SHOT_URL');
 
     console.time('axios');
-    const imgTest = this.httpService.get(
-      'http://localhost:8080/?action=snapshot',
+    const imgTest = await firstValueFrom(
+      this.httpService.get('http://localhost:8080/?action=snapshot'),
     );
     console.log(imgTest);
+    console.log(imgTest.data);
     console.timeEnd('axios');
 
     console.time('download');
