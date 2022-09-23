@@ -33,14 +33,18 @@ export class WebSocketService implements OnModuleInit {
   constructor(private configService: ConfigService) {}
 
   async onModuleInit() {
-    const auth = createLongLivedTokenAuth(
-      this.configService.get('HOME_ASSISTANT_URL'),
-      this.configService.get('HOME_ASSISTANT_API'),
-    );
-    WebSocketService.connection = await createConnection({ auth });
-    console.log('HomeAssistant Service started');
-    await this.resetServos();
-    this.subscribeEntities();
+    try {
+      const auth = createLongLivedTokenAuth(
+        this.configService.get('HOME_ASSISTANT_URL'),
+        this.configService.get('HOME_ASSISTANT_API'),
+      );
+      WebSocketService.connection = await createConnection({ auth });
+      console.log('HomeAssistant Service started');
+      await this.resetServos();
+      this.subscribeEntities();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   subscribeEntities() {

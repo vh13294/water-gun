@@ -12,8 +12,12 @@ export class TensorFlowService implements OnModuleInit {
   private detector: PoseDetector;
 
   async onModuleInit() {
-    this.detector = await createDetector(SupportedModels.MoveNet);
-    console.log('TensorFlow Service Started');
+    try {
+      this.detector = await createDetector(SupportedModels.MoveNet);
+      console.log('TensorFlow Service Started');
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async getPose(imageBuffer: Buffer) {
