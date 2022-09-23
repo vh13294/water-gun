@@ -30,7 +30,6 @@ export class CameraService implements OnModuleInit {
     console.time('axios');
     const imgTest = await firstValueFrom(this.httpService.get(url));
     console.log(imgTest);
-    console.log(imgTest.data);
     console.timeEnd('axios');
 
     console.time('download');
