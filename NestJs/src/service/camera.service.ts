@@ -2,6 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Servo, WebSocketService } from './websocket.service';
 import Jimp from 'jimp';
+import { HttpService } from '@nestjs/axios';
 
 // interface
 
@@ -9,7 +10,10 @@ import Jimp from 'jimp';
 export class CameraService implements OnModuleInit {
   private static normalizedImageFactor: { pitch: number; yaw: number };
 
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private configService: ConfigService,
+    private readonly httpService: HttpService,
+  ) {}
 
   async onModuleInit() {
     CameraService.normalizedImageFactor = this.getNormalizeImageFactor(
@@ -22,12 +26,23 @@ export class CameraService implements OnModuleInit {
   async downloadTest() {
     const url = this.configService.get('SNAP_SHOT_URL');
 
+    console.time('axios');
+    const imgTest = this.httpService.get(
+      'http://localhost:8080/?action=snapshot',
+    );
+    console.log(imgTest);
+    console.timeEnd('axios');
+
     console.time('download');
     const img = await Jimp.read(url);
     console.timeEnd('download');
 
+    console.time('crop');
+    const croppedImg = this.cropImage(img);
+    console.timeEnd('crop');
+
     console.time('buffer');
-    const buffer = img.getBufferAsync(Jimp.MIME_JPEG);
+    const buffer = croppedImg.getBufferAsync(Jimp.MIME_JPEG);
     console.timeEnd('buffer');
 
     return buffer;

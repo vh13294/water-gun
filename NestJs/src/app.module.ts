@@ -6,9 +6,14 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TaskService } from './service/task.service';
 import { ConfigModule } from '@nestjs/config';
 import { CameraService } from './service/camera.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [ConfigModule.forRoot({ cache: true }), ScheduleModule.forRoot()],
+  imports: [
+    ConfigModule.forRoot({ cache: true }),
+    ScheduleModule.forRoot(),
+    HttpModule,
+  ],
   controllers: [AppController],
   providers: [TensorFlowService, WebSocketService, TaskService, CameraService],
 })
