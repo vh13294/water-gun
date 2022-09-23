@@ -39,22 +39,18 @@ export class TaskService {
   }
 
   async detectPoseAndShootTest() {
-    console.time('download');
     const imageBuffer = await this.cameraService.downloadTest();
-    console.timeEnd('download');
 
     console.time('getPose');
     const keypoints = await this.tensorFlowService.getPose(imageBuffer);
     console.timeEnd('getPose');
 
     if (keypoints) {
-      console.time('pointShoot');
       const nosePoint = this.tensorFlowService.getSpecificKeyPoint(
         'nose',
         keypoints,
       );
       await this.moveToTargetAndOpenValve(nosePoint);
-      console.timeEnd('pointShoot');
     }
   }
 

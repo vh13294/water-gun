@@ -21,8 +21,16 @@ export class CameraService implements OnModuleInit {
 
   async downloadTest() {
     const url = this.configService.get('SNAP_SHOT_URL');
+
+    console.time('download');
     const img = await Jimp.read(url);
-    return img.getBufferAsync(Jimp.MIME_JPEG);
+    console.timeEnd('download');
+
+    console.time('buffer');
+    const buffer = img.getBufferAsync(Jimp.MIME_JPEG);
+    console.timeEnd('buffer');
+
+    return buffer;
   }
 
   async downloadImage() {
