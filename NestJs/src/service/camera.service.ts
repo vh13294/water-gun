@@ -1,76 +1,79 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Servo, WebSocketService } from './websocket.service';
-import Jimp from 'jimp';
-import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
-
-// interface
+import { OnEvent } from '@nestjs/event-emitter';
+import { Keypoint } from '@tensorflow-models/pose-detection';
+import MjpegDecoder from 'mjpeg-decoder';
+import { TensorFlowService } from './tensorflow.service';
+import { WebSocketService } from './websocket.service';
 
 @Injectable()
 export class CameraService implements OnModuleInit {
-  private static normalizedImageFactor: { pitch: number; yaw: number };
+  private decoder: MjpegDecoder;
+  private isProcessing = false;
 
   constructor(
     private configService: ConfigService,
-    private readonly httpService: HttpService,
+    private readonly tensorFlowService: TensorFlowService,
+    private readonly webSocketService: WebSocketService,
   ) {}
 
   async onModuleInit() {
-    CameraService.normalizedImageFactor = this.getNormalizeImageFactor(
-      WebSocketService.pitch,
-      WebSocketService.yaw,
-    );
+    this.initStream();
     console.log('Camera Service started');
   }
 
-  async downloadTest() {
-    const url = this.configService.get('SNAP_SHOT_URL');
+  private async initStream() {
+    const url = this.configService.get('STREAM_URL');
 
-    console.time('axios');
-    const response = await firstValueFrom(this.httpService.get(url));
-    console.timeEnd('axios');
-    return Buffer.from(response.data, 'binary');
+    this.decoder = new MjpegDecoder(url, { timeout: 1000 });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    this.decoder.on('frame', async (frame, seq) => {
+      if (!this.isProcessing) {
+        console.time('frame');
+        this.isProcessing = true;
+        try {
+          await this.frameAction(frame);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          this.isProcessing = false;
+        }
+        console.timeEnd('frame');
+      }
+    });
   }
 
-  async downloadImage() {
-    const url = this.configService.get('SNAP_SHOT_URL');
-    return await Jimp.read(url);
+  private async frameAction(frame: Buffer) {
+    const keypoints = await this.tensorFlowService.getPose(frame);
+    if (keypoints) {
+      const nosePoint = this.tensorFlowService.getSpecificKeyPoint(
+        'nose',
+        keypoints,
+      );
+      await this.moveToTarget(nosePoint);
+    }
   }
 
-  cropImage(img: Jimp) {
-    const x = Number(this.configService.get('CROP_IMAGE_X'));
-    const y = Number(this.configService.get('CROP_IMAGE_Y'));
-    const w = Number(this.configService.get('CROP_IMAGE_W'));
-    const h = Number(this.configService.get('CROP_IMAGE_H'));
-    return img.crop(x, y, w, h);
+  async moveToTarget(keypoint: Keypoint) {
+    const centreX = Number(this.configService.get('IMG_WIDTH')) / 2;
+    const centreY = Number(this.configService.get('IMG_HEIGHT')) / 2;
+
+    const diffX = keypoint.x - centreX;
+    const diffY = keypoint.y - centreY;
+
+    const moveX = Number(this.configService.get('SERVO_YAW_RATIO')) * diffX;
+    const moveY = Number(this.configService.get('SERVO_PITCH_RATIO')) * diffY;
+
+    await this.webSocketService.moveServos(moveX, moveY);
   }
 
-  async downloadAndCropImage() {
-    const img = await this.downloadImage();
-    const croppedImg = this.cropImage(img);
-    return await croppedImg.getBufferAsync(Jimp.MIME_JPEG);
+  @OnEvent('autoModeActivated')
+  startDecoder() {
+    this.decoder.start();
   }
 
-  getNormalizeImageFactor(pitch: Servo, yaw: Servo) {
-    const pitchRange = pitch.max - pitch.min;
-    const yawRange = yaw.max - yaw.min;
-
-    const w = Number(this.configService.get('CROP_IMAGE_W'));
-    const h = Number(this.configService.get('CROP_IMAGE_H'));
-
-    return {
-      pitch: pitchRange / h,
-      yaw: yawRange / w,
-    };
-  }
-
-  getServoValuesFromImagePoint(x: number, y: number) {
-    const normalizedPitch = y * CameraService.normalizedImageFactor.pitch;
-    const normalizedYaw = x * CameraService.normalizedImageFactor.yaw;
-    return {
-      pitch: WebSocketService.pitch.max - normalizedPitch,
-      yaw: WebSocketService.yaw.max - normalizedYaw,
-    };
+  @OnEvent('autoModeDeactivated')
+  stopDecoder() {
+    this.decoder.stop();
   }
 }

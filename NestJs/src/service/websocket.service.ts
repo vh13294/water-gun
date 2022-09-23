@@ -1,5 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   callService,
   Connection,
@@ -8,29 +9,34 @@ import {
   subscribeEntities,
 } from 'home-assistant-js-websocket';
 import { setTimeout } from 'timers/promises';
-import { TaskService } from './task.service';
 
 export interface Servo {
   max: number;
   min: number;
+  value: number;
   id: string;
 }
 
 @Injectable()
 export class WebSocketService implements OnModuleInit {
-  static connection: Connection;
-  static pitch: Servo = {
+  private connection: Connection;
+  private pitch: Servo = {
     max: 70,
-    min: 35,
+    min: 20,
+    value: 0,
     id: 'number.pitch_control',
   };
-  static yaw: Servo = {
+  private yaw: Servo = {
     max: 70,
     min: -40,
+    value: 0,
     id: 'number.yaw_control',
   };
 
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private configService: ConfigService,
+    private eventEmitter: EventEmitter2,
+  ) {}
 
   async onModuleInit() {
     try {
@@ -38,47 +44,57 @@ export class WebSocketService implements OnModuleInit {
         this.configService.get('HOME_ASSISTANT_URL'),
         this.configService.get('HOME_ASSISTANT_API'),
       );
-      WebSocketService.connection = await createConnection({ auth });
+      this.connection = await createConnection({ auth });
+      this.subscribeHomeEntities();
+      this.resetServos();
       console.log('HomeAssistant Service started');
-      await this.resetServos();
-      this.subscribeEntities();
     } catch (error) {
       console.log(error);
     }
   }
 
-  subscribeEntities() {
-    subscribeEntities(WebSocketService.connection, (ent) => {
+  subscribeHomeEntities() {
+    subscribeEntities(this.connection, (ent) => {
       const autoModeState = ent['switch.auto_mode_active'].state;
       if (autoModeState === 'on') {
-        TaskService.isAutoMode = true;
+        this.eventEmitter.emit('autoModeActivated');
       } else if (autoModeState === 'off') {
-        TaskService.isAutoMode = false;
+        this.eventEmitter.emit('autoModeDeactivated');
       }
     });
   }
 
   async moveServoPitch(value: number) {
-    const pitch = this.clamp(WebSocketService.pitch, value);
-    await this.callServiceSetNumber(WebSocketService.pitch, pitch);
+    const init = this.pitch.value;
+    this.pitch.value += value;
+    this.pitch.value = this.clamp(this.pitch);
+
+    if (init !== this.pitch.value) {
+      this.callServiceSetNumber(this.pitch);
+    }
   }
 
   async moveServoYaw(value: number) {
-    const yaw = this.clamp(WebSocketService.yaw, value);
-    await this.callServiceSetNumber(WebSocketService.yaw, yaw);
+    const init = this.yaw.value;
+    this.yaw.value += value;
+    this.yaw.value = this.clamp(this.yaw);
+
+    if (init !== this.yaw.value) {
+      this.callServiceSetNumber(this.yaw);
+    }
   }
 
   async moveServos(yaw: number, pitch: number) {
     await this.moveServoYaw(yaw);
     await this.moveServoPitch(pitch);
     // wait for servos to move in place
-    await setTimeout(50);
+    await setTimeout(500);
   }
 
-  async callServiceSetNumber(target: Servo, value: number) {
-    await callService(WebSocketService.connection, 'number', 'set_value', {
+  async callServiceSetNumber(target: Servo) {
+    await callService(this.connection, 'number', 'set_value', {
       entity_id: target.id,
-      value: value,
+      value: target.value,
     });
   }
 
@@ -90,16 +106,19 @@ export class WebSocketService implements OnModuleInit {
   }
 
   async resetServos() {
-    await this.moveServos(15, 50);
+    this.yaw.value = 15;
+    this.pitch.value = 50;
+    this.callServiceSetNumber(this.pitch);
+    this.callServiceSetNumber(this.yaw);
   }
 
-  private clamp(target: Servo, value: number) {
-    if (value > target.max) {
+  private clamp(target: Servo) {
+    if (target.value > target.max) {
       return target.max;
-    } else if (value < target.min) {
+    } else if (target.value < target.min) {
       return target.min;
     } else {
-      return value;
+      return target.value;
     }
   }
 }

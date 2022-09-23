@@ -3,6 +3,7 @@
         "Keypoint",
         "keypoints",
         "longpress",
+        "Mjpeg",
         "nestjs",
         "onlongpress",
         "sveltejs",

@@ -1,87 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { Interval } from '@nestjs/schedule';
 import { CameraService } from './camera.service';
-import { TensorFlowService } from './tensorflow.service';
-import { WebSocketService } from './websocket.service';
 import { createCanvas, loadImage } from 'canvas';
 import { writeFile } from 'fs/promises';
-import { Keypoint } from '@tensorflow-models/pose-detection';
 import Jimp from 'jimp';
+import { ConfigService } from '@nestjs/config';
+import { Keypoint } from '@tensorflow-models/pose-detection';
 
 @Injectable()
 export class TaskService {
-  static isAutoMode = false;
-  private static isProcessing = false;
-
   constructor(
-    private readonly tensorFlowService: TensorFlowService,
-    private readonly webSocketService: WebSocketService,
     private readonly cameraService: CameraService,
+    private configService: ConfigService,
   ) {}
 
-  @Interval(10000)
-  async handleInterval() {
-    // console.log('Called every 10 seconds');
-    if (TaskService.isAutoMode) {
-      if (!TaskService.isProcessing) {
-        TaskService.isProcessing = true;
-        try {
-          await this.detectPoseAndShoot();
-        } catch (error) {
-          console.log(error);
-        } finally {
-          TaskService.isProcessing = false;
-        }
-      } else {
-        console.warn('Detection process not yet complete');
-      }
-    }
-  }
-
-  async detectPoseAndShootTest() {
-    const imageBuffer = await this.cameraService.downloadTest();
-
-    console.time('getPose');
-    const keypoints = await this.tensorFlowService.getPose(imageBuffer);
-    console.timeEnd('getPose');
-
-    if (keypoints) {
-      const nosePoint = this.tensorFlowService.getSpecificKeyPoint(
-        'nose',
-        keypoints,
-      );
-      await this.moveToTargetAndOpenValve(nosePoint);
-    }
-  }
-
-  async detectPoseAndShoot() {
-    const imageBuffer = await this.cameraService.downloadAndCropImage();
-    const keypoints = await this.tensorFlowService.getPose(imageBuffer);
-    if (keypoints) {
-      const nosePoint = this.tensorFlowService.getSpecificKeyPoint(
-        'nose',
-        keypoints,
-      );
-      await this.moveToTargetAndOpenValve(nosePoint);
-    }
-  }
-
-  async moveToTargetAndOpenValve(nosePoint: Keypoint) {
-    const servos = this.cameraService.getServoValuesFromImagePoint(
-      nosePoint.x,
-      nosePoint.y,
-    );
-    await this.webSocketService.moveServos(servos.yaw, servos.pitch);
-    await this.webSocketService.releaseWaterValve(3000);
-    await this.webSocketService.resetServos();
-  }
-
-  setAutoMode(bool: boolean) {
-    TaskService.isAutoMode = bool;
-  }
-
   async takeSnapShot() {
-    const imageBuffer = await this.cameraService.downloadImage();
+    const url = this.configService.get('SNAP_SHOT_URL');
+    const imageBuffer = await Jimp.read(url);
     const jimpImg = await imageBuffer.getBufferAsync(Jimp.MIME_JPEG);
     this.canvasDraw([], jimpImg);
   }

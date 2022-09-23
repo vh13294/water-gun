@@ -7,11 +7,13 @@ import { TaskService } from './service/task.service';
 import { ConfigModule } from '@nestjs/config';
 import { CameraService } from './service/camera.service';
 import { HttpModule } from '@nestjs/axios';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ cache: true }),
     ScheduleModule.forRoot(),
+    EventEmitterModule.forRoot(),
     HttpModule,
   ],
   controllers: [AppController],
