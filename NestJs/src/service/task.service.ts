@@ -38,26 +38,23 @@ export class TaskService {
     }
   }
 
-  async detectPoseAndShootTest(fileId: string) {
-    try {
-      console.time('water jet');
-      const imageBuffer = await this.cameraService.downloadTest(
-        `public/${fileId}.jpg`,
+  async detectPoseAndShootTest() {
+    console.time('downloadCrop');
+    const imageBuffer = await this.cameraService.downloadAndCropImage();
+    console.timeEnd('downloadCrop');
+
+    console.time('getPose');
+    const keypoints = await this.tensorFlowService.getPose(imageBuffer);
+    console.timeEnd('getPose');
+
+    if (keypoints) {
+      console.time('pointShoot');
+      const nosePoint = this.tensorFlowService.getSpecificKeyPoint(
+        'nose',
+        keypoints,
       );
-      console.log('image downloaded');
-      const keypoints = await this.tensorFlowService.getPose(imageBuffer);
-      if (keypoints) {
-        console.log('pos detected');
-        this.canvasDraw(keypoints, imageBuffer);
-        const nosePoint = this.tensorFlowService.getSpecificKeyPoint(
-          'nose',
-          keypoints,
-        );
-        await this.moveToTargetAndOpenValve(nosePoint);
-      }
-      console.timeEnd('water jet');
-    } catch (error) {
-      console.log(error);
+      await this.moveToTargetAndOpenValve(nosePoint);
+      console.timeEnd('pointShoot');
     }
   }
 
