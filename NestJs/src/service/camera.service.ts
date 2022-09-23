@@ -28,11 +28,12 @@ export class CameraService implements OnModuleInit {
     this.decoder = new MjpegDecoder(url, { timeout: 1000 });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.decoder.on('frame', async (frame, seq) => {
-      if (!this.isProcessing) {
+      if (!this.isProcessing && frame.byteLength > 10000) {
         console.time('frame');
         this.isProcessing = true;
         try {
           await this.frameAction(frame);
+          console.log(frame.byteLength);
         } catch (error) {
           console.log(error);
         } finally {
@@ -58,12 +59,15 @@ export class CameraService implements OnModuleInit {
     const centreX = Number(this.configService.get('IMG_WIDTH')) / 2;
     const centreY = Number(this.configService.get('IMG_HEIGHT')) / 2;
 
-    const diffX = keypoint.x - centreX;
-    const diffY = keypoint.y - centreY;
+    const diffX = centreX - keypoint.x;
+    const diffY = centreY - keypoint.y;
 
     const moveX = Number(this.configService.get('SERVO_YAW_RATIO')) * diffX;
     const moveY = Number(this.configService.get('SERVO_PITCH_RATIO')) * diffY;
 
+    console.log(
+      `key: ${keypoint.x}, ${keypoint.y}, diff: ${diffX}, ${diffY}, move: ${moveX}, ${moveY}`,
+    );
     await this.webSocketService.moveServos(moveX, moveY);
   }
 
