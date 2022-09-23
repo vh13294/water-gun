@@ -43,8 +43,8 @@ class WebSocket {
 
   async connectHA() {
     const auth = createLongLivedTokenAuth(
-      import.meta.env.HOME_ASSISTANT_URL,
-      import.meta.env.HOME_ASSISTANT_API
+      import.meta.env.VITE_HOME_ASSISTANT_URL,
+      import.meta.env.VITE_HOME_ASSISTANT_API
     );
     this.connection = await createConnection({ auth });
     console.log("HA Init");
