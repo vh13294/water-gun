@@ -28,23 +28,9 @@ export class CameraService implements OnModuleInit {
     const url = this.configService.get('SNAP_SHOT_URL');
 
     console.time('axios');
-    const imgTest = await firstValueFrom(this.httpService.get(url));
-    console.log(imgTest);
+    const img = await firstValueFrom(this.httpService.get(url));
     console.timeEnd('axios');
-
-    console.time('download');
-    const img = await Jimp.read(url);
-    console.timeEnd('download');
-
-    console.time('crop');
-    const croppedImg = this.cropImage(img);
-    console.timeEnd('crop');
-
-    console.time('buffer');
-    const buffer = croppedImg.getBufferAsync(Jimp.MIME_JPEG);
-    console.timeEnd('buffer');
-
-    return buffer;
+    return img.data;
   }
 
   async downloadImage() {
