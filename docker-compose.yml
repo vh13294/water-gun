@@ -4,27 +4,39 @@ services:
     container_name: homeassistant
     image: "ghcr.io/home-assistant/home-assistant:stable"
     volumes:
-      - ./config/:/config
+      - ./HA/config/:/config
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
+    privileged: true
+    network_mode: host
+
+  esphome:
+    container_name: esphome
+    image: esphome/esphome
+    volumes:
+      - ./ESPHome/config:/config
+      - /etc/localtime:/etc/localtime:ro
     privileged: true
     network_mode: host
 
   nest-server:
     build: ./NestJs
     image: nest
+    restart: unless-stopped
     ports:
       - "3015:3000"
 
   svelte-server:
     build: ./Svelte
     image: svelte
+    restart: unless-stopped
     ports:
       - "3010:80"
 
   camera-server:
     build: ./Mjpg-streamer
     image: mjpg
+    restart: unless-stopped
     devices:
       - "/dev/video0:/dev/video0"
       - "/dev/video1:/dev/video1"
