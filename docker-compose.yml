@@ -27,5 +27,6 @@ services:
     image: mjpg
     devices:
       - "/dev/video0:/dev/video0"
+      - "/dev/video1:/dev/video1"
     ports:
       - "8080:8080"
