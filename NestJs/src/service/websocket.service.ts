@@ -1,4 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import {
   callService,
   Connection,
@@ -29,10 +30,12 @@ export class WebSocketService implements OnModuleInit {
     id: 'number.yaw_control',
   };
 
+  constructor(private configService: ConfigService) {}
+
   async onModuleInit() {
     const auth = createLongLivedTokenAuth(
-      'http://192.168.20.242:8123',
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjMzEyMjExYmFmNmQ0NGM5Yjg4MGFkOTQ1OGQ1MGM3OCIsImlhdCI6MTY2MTc2MzM1NSwiZXhwIjoxOTc3MTIzMzU1fQ.BDyweFlSs1SCFJLr7u5ySTvZKRTbkaguTNf9L7JWHjM',
+      this.configService.get('HOME_ASSISTANT_URL'),
+      this.configService.get('HOME_ASSISTANT_API'),
     );
     WebSocketService.connection = await createConnection({ auth });
     console.log('HomeAssistant Service started');
