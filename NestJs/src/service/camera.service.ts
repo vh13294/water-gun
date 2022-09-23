@@ -28,9 +28,9 @@ export class CameraService implements OnModuleInit {
     const url = this.configService.get('SNAP_SHOT_URL');
 
     console.time('axios');
-    const img = await firstValueFrom(this.httpService.get(url));
+    const response = await firstValueFrom(this.httpService.get(url));
     console.timeEnd('axios');
-    return img.data;
+    return Buffer.from(response.data, 'binary');
   }
 
   async downloadImage() {
