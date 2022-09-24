@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Keypoint } from '@tensorflow-models/pose-detection';
 import MjpegDecoder from 'mjpeg-decoder';
+import { StreamService } from './stream.service';
 import { TensorFlowService } from './tensorflow.service';
 import { WebSocketService } from './websocket.service';
 
@@ -15,6 +16,7 @@ export class CameraService implements OnModuleInit {
     private configService: ConfigService,
     private readonly tensorFlowService: TensorFlowService,
     private readonly webSocketService: WebSocketService,
+    private readonly streamService: StreamService,
   ) {}
 
   async onModuleInit() {
@@ -52,6 +54,8 @@ export class CameraService implements OnModuleInit {
         keypoints,
       );
       await this.moveToTarget(nosePoint);
+    } else {
+      await this.webSocketService.resetServos();
     }
   }
 

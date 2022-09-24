@@ -108,8 +108,10 @@ export class WebSocketService implements OnModuleInit {
   async resetServos() {
     this.yaw.value = 15;
     this.pitch.value = 50;
-    this.callServiceSetNumber(this.pitch);
-    this.callServiceSetNumber(this.yaw);
+    await this.callServiceSetNumber(this.pitch);
+    await this.callServiceSetNumber(this.yaw);
+    // wait for servos to move in place
+    await setTimeout(100);
   }
 
   private clamp(target: Servo) {
