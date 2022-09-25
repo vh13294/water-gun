@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Keypoint } from '@tensorflow-models/pose-detection';
 import MjpegDecoder from 'mjpeg-decoder';
-import { StreamService } from './stream.service';
 import { TensorFlowService } from './tensorflow.service';
 import { WebSocketService } from './websocket.service';
 
@@ -16,7 +15,6 @@ export class CameraService implements OnModuleInit {
     private configService: ConfigService,
     private readonly tensorFlowService: TensorFlowService,
     private readonly webSocketService: WebSocketService,
-    private readonly streamService: StreamService,
   ) {}
 
   async onModuleInit() {
@@ -27,11 +25,10 @@ export class CameraService implements OnModuleInit {
   private async initStream() {
     const url = this.configService.get('STREAM_URL');
 
-    this.decoder = new MjpegDecoder(url, { timeout: 1000 });
+    this.decoder = new MjpegDecoder(url, { interval: 200, timeout: 1000 });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.decoder.on('frame', async (frame, seq) => {
-      if (!this.isProcessing && frame.byteLength > 10000) {
-        console.time('frame');
+      if (!this.isProcessing) {
         this.isProcessing = true;
         try {
           await this.frameAction(frame);
@@ -42,6 +39,7 @@ export class CameraService implements OnModuleInit {
           this.isProcessing = false;
         }
         console.timeEnd('frame');
+        console.time('frame');
       }
     });
   }
@@ -54,8 +52,6 @@ export class CameraService implements OnModuleInit {
         keypoints,
       );
       await this.moveToTarget(nosePoint);
-    } else {
-      await this.webSocketService.resetServos();
     }
   }
 
@@ -75,12 +71,12 @@ export class CameraService implements OnModuleInit {
     await this.webSocketService.moveServos(moveX, moveY);
   }
 
-  // @OnEvent('autoModeActivated')
+  @OnEvent('autoModeActivated')
   startDecoder() {
     this.decoder.start();
   }
 
-  // @OnEvent('autoModeDeactivated')
+  @OnEvent('autoModeDeactivated')
   stopDecoder() {
     this.decoder.stop();
   }

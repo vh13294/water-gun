@@ -34,22 +34,22 @@ export class StreamService implements OnModuleInit {
     const response = await fetch(url);
     this.stream = response.body;
     this.stream.pause();
-    this.stream.on('data', (data: Uint8Array) => {
+    this.stream.on('data', (data) => {
       this.buildFrame(data);
     });
   }
 
-  @OnEvent('autoModeActivated')
+  // @OnEvent('autoModeActivated')
   async streamStart() {
     this.stream.resume();
   }
 
-  @OnEvent('autoModeDeactivated')
+  // @OnEvent('autoModeDeactivated')
   async streamStop() {
     this.stream.pause();
   }
 
-  private buildFrame(chunk: Uint8Array) {
+  private buildFrame(chunk: Buffer) {
     this.imgData = Buffer.concat([this.imgData, chunk]);
 
     if (this.imgStart === EOF) {
@@ -66,10 +66,11 @@ export class StreamService implements OnModuleInit {
           this.imgStart,
           this.imgEnd + EOI.length,
         );
-        this.frameAction(frame);
+        // this.frameAction(frame);
+        this.imgData = frame;
         this.imgData = this.imgData.subarray(this.imgEnd + EOI.length);
+        console.log(this.imgData);
         // this.imgData = Buffer.alloc(0);
-        console.log(this.imgData.length);
         this.imgStart = EOF;
         this.imgEnd = EOF;
       }
@@ -84,8 +85,6 @@ export class StreamService implements OnModuleInit {
         keypoints,
       );
       await this.moveToTarget(nosePoint);
-    } else {
-      await this.webSocketService.resetServos();
     }
   }
 
@@ -99,9 +98,9 @@ export class StreamService implements OnModuleInit {
     const moveX = Number(this.configService.get('SERVO_YAW_RATIO')) * diffX;
     const moveY = Number(this.configService.get('SERVO_PITCH_RATIO')) * diffY;
 
-    // console.log(
-    //   `key: ${keypoint.x}, ${keypoint.y}, diff: ${diffX}, ${diffY}, move: ${moveX}, ${moveY}`,
-    // );
+    console.log(
+      `key: ${keypoint.x}, ${keypoint.y}, diff: ${diffX}, ${diffY}, move: ${moveX}, ${moveY}`,
+    );
     await this.webSocketService.moveServos(moveX, moveY);
   }
 }

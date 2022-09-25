@@ -24,8 +24,8 @@ export class AppController {
     this.streamService.streamStop();
   }
 
-  @Get('snapshot')
-  snapshot() {
-    return this.taskService.takeSnapShot();
-  }
+  // @Get('snapshot')
+  // snapshot() {
+  //   return this.taskService.takeSnapShot();
+  // }
 }
