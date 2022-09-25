@@ -75,12 +75,12 @@ export class CameraService implements OnModuleInit {
     await this.webSocketService.moveServos(moveX, moveY);
   }
 
-  @OnEvent('autoModeActivated')
+  // @OnEvent('autoModeActivated')
   startDecoder() {
     this.decoder.start();
   }
 
-  @OnEvent('autoModeDeactivated')
+  // @OnEvent('autoModeDeactivated')
   stopDecoder() {
     this.decoder.stop();
   }

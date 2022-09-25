@@ -1,12 +1,28 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { OnEvent } from '@nestjs/event-emitter';
+import { Keypoint } from '@tensorflow-models/pose-detection';
 import fetch from 'node-fetch';
+import { TensorFlowService } from './tensorflow.service';
+import { WebSocketService } from './websocket.service';
+
+const SOI = Buffer.from([0xff, 0xd8]);
+const EOI = Buffer.from([0xff, 0xd9]);
+const EOF = -1;
 
 @Injectable()
 export class StreamService implements OnModuleInit {
   private stream: NodeJS.ReadableStream;
 
-  constructor(private configService: ConfigService) {}
+  imgData = Buffer.alloc(0);
+  imgStart = -1;
+  imgEnd = -1;
+
+  constructor(
+    private configService: ConfigService,
+    private readonly tensorFlowService: TensorFlowService,
+    private readonly webSocketService: WebSocketService,
+  ) {}
 
   async onModuleInit() {
     this.initStream();
@@ -14,78 +30,78 @@ export class StreamService implements OnModuleInit {
   }
 
   async initStream() {
-    const SOI = new Uint8Array(2);
-    SOI[0] = 0xff;
-    SOI[1] = 0xd8;
-
     const url = this.configService.get('STREAM_URL');
     const response = await fetch(url);
     this.stream = response.body;
     this.stream.pause();
     this.stream.on('data', (data: Uint8Array) => {
-      this.read(data);
+      this.buildFrame(data);
     });
   }
 
+  @OnEvent('autoModeActivated')
   async streamStart() {
     this.stream.resume();
   }
 
+  @OnEvent('autoModeDeactivated')
   async streamStop() {
     this.stream.pause();
   }
 
-  private read(value: Uint8Array) {
-    const TYPE_JPEG = 'image/jpeg';
-    const SOI = new Uint8Array(2);
-    SOI[0] = 0xff;
-    SOI[1] = 0xd8;
-    let headers = '';
-    let contentLength = -1;
-    let imageBuffer = null;
-    let bytesRead = 0;
+  private buildFrame(chunk: Uint8Array) {
+    this.imgData = Buffer.concat([this.imgData, chunk]);
 
-    for (let index = 0; index < value.length; index++) {
-      // we've found start of the frame. Everything we've read till now is the header.
-      if (value[index] === SOI[0] && value[index + 1] === SOI[1]) {
-        // console.log('header found : ' + newHeader);
-        contentLength = this.getLength(headers);
-        // console.log("Content Length : " + newContentLength);
-        imageBuffer = new Uint8Array(new ArrayBuffer(contentLength));
+    if (this.imgStart === EOF) {
+      this.imgStart = this.imgData.indexOf(SOI);
+    }
+
+    if (this.imgStart >= 0) {
+      if (this.imgEnd === EOF) {
+        this.imgEnd = this.imgData.indexOf(EOI, this.imgStart + SOI.length);
       }
-      // we're still reading the header.
-      if (contentLength <= 0) {
-        headers += String.fromCharCode(value[index]);
-      }
-      // we're now reading the jpeg.
-      else if (bytesRead < contentLength) {
-        imageBuffer[bytesRead++] = value[index];
-      }
-      // we're done reading the jpeg. Time to render it.
-      else {
-        // console.log("jpeg read with bytes : " + bytesRead);
-        const frame = URL.createObjectURL(
-          new Blob([imageBuffer], { type: TYPE_JPEG }),
+      if (this.imgEnd >= this.imgStart) {
+        // a frame is found.
+        const frame = this.imgData.subarray(
+          this.imgStart,
+          this.imgEnd + EOI.length,
         );
-        console.log(frame);
-        contentLength = 0;
-        bytesRead = 0;
-        headers = '';
+        this.frameAction(frame);
+        this.imgData = this.imgData.subarray(this.imgEnd + EOI.length);
+        // this.imgData = Buffer.alloc(0);
+        console.log(this.imgData.length);
+        this.imgStart = EOF;
+        this.imgEnd = EOF;
       }
     }
   }
 
-  private getLength(headers: string) {
-    const CONTENT_LENGTH = 'content-length';
+  private async frameAction(frame: Buffer) {
+    const keypoints = await this.tensorFlowService.getPose(frame);
+    if (keypoints) {
+      const nosePoint = this.tensorFlowService.getSpecificKeyPoint(
+        'nose',
+        keypoints,
+      );
+      await this.moveToTarget(nosePoint);
+    } else {
+      await this.webSocketService.resetServos();
+    }
+  }
 
-    let contentLength = 0;
-    headers.split('\n').forEach((header, _) => {
-      const pair = header.split(':');
-      if (pair[0].toLowerCase() === CONTENT_LENGTH) {
-        // Fix for issue https://github.com/aruntj/mjpeg-readable-stream/issues/3 suggested by martapanc
-        contentLength = Number(pair[1]);
-      }
-    });
-    return contentLength;
+  private async moveToTarget(keypoint: Keypoint) {
+    const centreX = Number(this.configService.get('IMG_WIDTH')) / 2;
+    const centreY = Number(this.configService.get('IMG_HEIGHT')) / 2;
+
+    const diffX = centreX - keypoint.x;
+    const diffY = centreY - keypoint.y;
+
+    const moveX = Number(this.configService.get('SERVO_YAW_RATIO')) * diffX;
+    const moveY = Number(this.configService.get('SERVO_PITCH_RATIO')) * diffY;
+
+    // console.log(
+    //   `key: ${keypoint.x}, ${keypoint.y}, diff: ${diffX}, ${diffY}, move: ${moveX}, ${moveY}`,
+    // );
+    await this.webSocketService.moveServos(moveX, moveY);
   }
 }
