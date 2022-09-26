@@ -14,6 +14,8 @@ interface Servo {
   id: string;
 }
 
+export const autoModeState = writable(false);
+
 class WebSocket {
   private connection: Connection;
   private pitch: Servo = {
@@ -34,8 +36,6 @@ class WebSocket {
     relayTwo: "switch.relay_2",
     autoMode: "switch.auto_mode_active",
   };
-
-  public autoModeState = writable(false);
 
   constructor() {
     this.connectHA();
@@ -74,11 +74,11 @@ class WebSocket {
 
   async subscribeAutoMode() {
     subscribeEntities(this.connection, (ent) => {
-      const autoModeState = ent["switch.auto_mode_active"].state;
-      if (autoModeState === "on") {
-        this.autoModeState.set(true);
-      } else if (autoModeState === "off") {
-        this.autoModeState.set(false);
+      const newState = ent["switch.auto_mode_active"].state;
+      if (newState === "on") {
+        autoModeState.set(true);
+      } else if (newState === "off") {
+        autoModeState.set(false);
       }
     });
   }

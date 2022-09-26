@@ -1,10 +1,6 @@
 <script lang="ts">
   import websocket from "./websocket";
-
-  let autoModeState = false;
-  websocket.autoModeState.subscribe((value) => {
-    autoModeState = value;
-  });
+  import { autoModeState } from "./websocket";
 </script>
 
 <div class="control">
@@ -41,7 +37,7 @@
       Turn off Auto Mode
     </button>
 
-    <h3>Auto Mode State: {autoModeState}</h3>
+    <h3>Auto Mode State: {$autoModeState}</h3>
     <button on:click={() => websocket.printServoPos()}>Print servo pos</button>
   </div>
 </div>
