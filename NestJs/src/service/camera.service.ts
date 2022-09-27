@@ -25,16 +25,17 @@ export class CameraService implements OnModuleInit {
   private async initStream() {
     const url = this.configService.get('STREAM_URL');
 
-    this.decoder = new MjpegDecoder(url, { interval: 200, timeout: 1000 });
+    this.decoder = new MjpegDecoder(url, { timeout: 1000 });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.decoder.on('frame', async (frame, seq) => {
       if (!this.isProcessing) {
         this.isProcessing = true;
         try {
           await this.frameAction(frame);
-          console.log(frame.byteLength);
         } catch (error) {
           console.log(error);
+          this.stopDecoder();
+          this.startDecoder();
         } finally {
           this.isProcessing = false;
         }
@@ -65,9 +66,10 @@ export class CameraService implements OnModuleInit {
     const moveX = Number(this.configService.get('SERVO_YAW_RATIO')) * diffX;
     const moveY = Number(this.configService.get('SERVO_PITCH_RATIO')) * diffY;
 
-    console.log(
-      `key: ${keypoint.x}, ${keypoint.y}, diff: ${diffX}, ${diffY}, move: ${moveX}, ${moveY}`,
-    );
+    // console.log(
+    //   `key: ${keypoint.x}, ${keypoint.y}, diff: ${diffX}, ${diffY}, move: ${moveX}, ${moveY}`,
+    // );
+    console.log(keypoint.score);
     await this.webSocketService.moveServos(moveX, moveY);
   }
 

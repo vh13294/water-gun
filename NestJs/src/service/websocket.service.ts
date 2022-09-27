@@ -45,8 +45,8 @@ export class WebSocketService implements OnModuleInit {
         this.configService.get('HOME_ASSISTANT_API'),
       );
       this.connection = await createConnection({ auth });
-      this.resetServos();
       this.subscribeHomeEntities();
+      this.resetServos();
       console.log('HomeAssistant Service started');
     } catch (error) {
       console.log(error);
@@ -88,7 +88,7 @@ export class WebSocketService implements OnModuleInit {
     await this.moveServoYaw(yaw);
     await this.moveServoPitch(pitch);
     // wait for servos to move in place
-    await setTimeout(20);
+    await setTimeout(60);
   }
 
   async callServiceSetNumber(target: Servo) {
