@@ -25,7 +25,7 @@ export class CameraService implements OnModuleInit {
   private async initStream() {
     const url = this.configService.get('STREAM_URL');
 
-    this.decoder = new MjpegDecoder(url, { timeout: 1000 });
+    this.decoder = new MjpegDecoder(url, { interval: 50, timeout: 1000 });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.decoder.on('frame', async (frame, seq) => {
       if (!this.isProcessing) {
