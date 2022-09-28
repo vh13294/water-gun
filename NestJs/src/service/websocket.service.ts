@@ -32,6 +32,11 @@ export class WebSocketService implements OnModuleInit {
     value: 0,
     id: 'number.yaw_control',
   };
+  private switchIds = {
+    relayOne: 'switch.relay_1',
+    relayTwo: 'switch.relay_2',
+    autoMode: 'switch.auto_mode_active',
+  };
 
   constructor(
     private configService: ConfigService,
@@ -91,10 +96,30 @@ export class WebSocketService implements OnModuleInit {
     await setTimeout(50);
   }
 
+  async setAutoMode(state: boolean) {
+    if (state) {
+      this.callServiceSwitchOn(this.switchIds.autoMode);
+    } else {
+      this.callServiceSwitchOff(this.switchIds.autoMode);
+    }
+  }
+
   async callServiceSetNumber(target: Servo) {
     await callService(this.connection, 'number', 'set_value', {
       entity_id: target.id,
       value: target.value,
+    });
+  }
+
+  async callServiceSwitchOn(switchId: string) {
+    await callService(this.connection, 'switch', 'turn_on', {
+      entity_id: switchId,
+    });
+  }
+
+  async callServiceSwitchOff(switchId: string) {
+    await callService(this.connection, 'switch', 'turn_off', {
+      entity_id: switchId,
     });
   }
 

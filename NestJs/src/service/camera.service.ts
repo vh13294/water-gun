@@ -34,8 +34,7 @@ export class CameraService implements OnModuleInit {
           await this.frameAction(frame);
         } catch (error) {
           console.log(error);
-          this.stopDecoder();
-          this.startDecoder();
+          this.webSocketService.setAutoMode(false);
         } finally {
           this.isProcessing = false;
         }
