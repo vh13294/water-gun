@@ -145,7 +145,6 @@ export class WebSocketService implements OnApplicationBootstrap {
     await this.changeValveState(true);
     await setTimeout(durationMilliSecond);
     await this.changeValveState(false);
-    await setTimeout(durationMilliSecond);
   }
 
   async resetServos() {

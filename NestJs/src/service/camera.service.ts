@@ -64,7 +64,8 @@ export class CameraService implements OnModuleInit {
         keypoints,
       );
       await this.moveToTarget(nosePoint);
-      await this.shootTarget();
+      // warning no await, better
+      this.shootTarget();
     }
   }
 
