@@ -7,38 +7,38 @@
   <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
     <button on:click={() => websocket.resetServos()}> Reset Servos </button>
 
-    <button on:click={() => websocket.releaseValve(1500)}> Shoot </button>
+    <button on:click={() => websocket.balancePumpAndValve()}>
+      Balance Pump & Valve</button
+    >
+
+    <button on:click={() => websocket.releaseValve(500)}> Shoot </button>
 
     <button on:click={() => websocket.changeValveState(false)}>
-      Turn off valve
+      off valve
     </button>
 
     <button on:click={() => websocket.changeValveState(true)}>
-      Turn on valve
+      on valve
     </button>
 
     <button on:click={() => websocket.changePumpState(false)}>
-      Turn off pump
+      off pump
     </button>
 
-    <button on:click={() => websocket.changePumpState(true)}>
-      Turn on pump
-    </button>
+    <button on:click={() => websocket.changePumpState(true)}> on pump </button>
 
     <button on:click={() => websocket.turnOffAllRelays()}>
-      Turn off All relays
+      off All relays
     </button>
 
-    <button on:click={() => websocket.setAutoMode(true)}>
-      Turn on Auto Mode
-    </button>
+    <button on:click={() => websocket.setAutoMode(true)}> on Auto Mode </button>
 
     <button on:click={() => websocket.setAutoMode(false)}>
-      Turn off Auto Mode
+      off Auto Mode
     </button>
 
     <h3>Auto Mode State: {$autoModeState}</h3>
-    <button on:click={() => websocket.printServoPos()}>Print servo pos</button>
+    <!-- <button on:click={() => websocket.printServoPos()}>Print servo pos</button> -->
   </div>
 </div>
 

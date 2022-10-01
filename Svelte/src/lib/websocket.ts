@@ -58,7 +58,7 @@ class WebSocket {
     this.pitch.value = this.clamp(this.pitch);
 
     if (init !== this.pitch.value) {
-      this.callServiceSetNumber(this.pitch);
+      await this.callServiceSetNumber(this.pitch);
     }
   }
 
@@ -68,7 +68,7 @@ class WebSocket {
     this.yaw.value = this.clamp(this.yaw);
 
     if (init !== this.yaw.value) {
-      this.callServiceSetNumber(this.yaw);
+      await this.callServiceSetNumber(this.yaw);
     }
   }
 
@@ -85,38 +85,38 @@ class WebSocket {
 
   async setAutoMode(state: boolean) {
     if (state) {
-      this.callServiceSwitchOn(this.switchIds.autoMode);
+      await this.callServiceSwitchOn(this.switchIds.autoMode);
     } else {
-      this.callServiceSwitchOff(this.switchIds.autoMode);
+      await this.callServiceSwitchOff(this.switchIds.autoMode);
     }
   }
 
   async releaseValve(durationMilliSecond: number) {
-    this.changeValveState(true);
-    setTimeout(() => {
-      this.changeValveState(false);
+    await this.changeValveState(true);
+    setTimeout(async () => {
+      await this.changeValveState(false);
     }, durationMilliSecond);
-  }
-
-  async changeValveState(state: boolean) {
-    if (state) {
-      this.callServiceSwitchOn(this.switchIds.relayOne);
-    } else {
-      this.callServiceSwitchOff(this.switchIds.relayOne);
-    }
   }
 
   async changePumpState(state: boolean) {
     if (state) {
-      this.callServiceSwitchOn(this.switchIds.relayTwo);
+      await this.callServiceSwitchOn(this.switchIds.relayOne);
     } else {
-      this.callServiceSwitchOff(this.switchIds.relayTwo);
+      await this.callServiceSwitchOff(this.switchIds.relayOne);
+    }
+  }
+
+  async changeValveState(state: boolean) {
+    if (state) {
+      await this.callServiceSwitchOn(this.switchIds.relayTwo);
+    } else {
+      await this.callServiceSwitchOff(this.switchIds.relayTwo);
     }
   }
 
   async turnOffAllRelays() {
-    this.changePumpState(false);
-    this.changeValveState(false);
+    await this.changePumpState(false);
+    await this.changeValveState(false);
   }
 
   async callServiceSetNumber(target: Servo) {
@@ -138,11 +138,19 @@ class WebSocket {
     });
   }
 
+  async balancePumpAndValve() {
+    await this.changeValveState(true);
+    await this.changePumpState(true);
+    setTimeout(async () => {
+      await this.changeValveState(false);
+    }, 5000);
+  }
+
   async resetServos() {
     this.yaw.value = 15;
     this.pitch.value = 50;
-    this.callServiceSetNumber(this.pitch);
-    this.callServiceSetNumber(this.yaw);
+    await this.callServiceSetNumber(this.pitch);
+    await this.callServiceSetNumber(this.yaw);
   }
 
   printServoPos() {

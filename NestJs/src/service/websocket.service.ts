@@ -27,12 +27,14 @@ export class WebSocketService implements OnApplicationBootstrap {
     value: 0,
     id: 'number.pitch_control',
   };
+
   private yaw: Servo = {
     max: 70,
     min: -40,
     value: 0,
     id: 'number.yaw_control',
   };
+
   private switchIds = {
     relayOne: 'switch.relay_1',
     relayTwo: 'switch.relay_2',
@@ -131,11 +133,19 @@ export class WebSocketService implements OnApplicationBootstrap {
     });
   }
 
+  async changeValveState(state: boolean) {
+    if (state) {
+      await this.callServiceSwitchOn(this.switchIds.relayTwo);
+    } else {
+      await this.callServiceSwitchOff(this.switchIds.relayTwo);
+    }
+  }
+
   async releaseWaterValve(durationMilliSecond: number) {
-    // open water valve,
-    // open valve for 1.5s
+    await this.changeValveState(true);
     await setTimeout(durationMilliSecond);
-    // close water valve
+    await this.changeValveState(false);
+    await setTimeout(durationMilliSecond);
   }
 
   async resetServos() {
