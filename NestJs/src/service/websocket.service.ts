@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
@@ -18,8 +18,9 @@ export interface Servo {
 }
 
 @Injectable()
-export class WebSocketService implements OnModuleInit {
+export class WebSocketService implements OnApplicationBootstrap {
   private connection: Connection;
+
   private pitch: Servo = {
     max: 70,
     min: 20,
@@ -43,19 +44,26 @@ export class WebSocketService implements OnModuleInit {
     private eventEmitter: EventEmitter2,
   ) {}
 
-  async onModuleInit() {
+  async onApplicationBootstrap() {
     try {
-      const auth = createLongLivedTokenAuth(
-        this.configService.get('HOME_ASSISTANT_URL'),
-        this.configService.get('HOME_ASSISTANT_API'),
-      );
-      this.connection = await createConnection({ auth });
-      this.subscribeHomeEntities();
-      this.resetServos();
-      console.log('HomeAssistant Service started');
+      await this.init();
     } catch (error) {
-      console.log(error);
+      console.error(`Home assistant error number: ${error}`);
+      // retry every 30s
+      await setTimeout(30000);
+      this.onApplicationBootstrap();
     }
+  }
+
+  async init() {
+    const auth = createLongLivedTokenAuth(
+      this.configService.get('HOME_ASSISTANT_URL'),
+      this.configService.get('HOME_ASSISTANT_API'),
+    );
+    this.connection = await createConnection({ auth });
+    this.subscribeHomeEntities();
+    this.resetServos();
+    console.log('HomeAssistant Service started');
   }
 
   subscribeHomeEntities() {
