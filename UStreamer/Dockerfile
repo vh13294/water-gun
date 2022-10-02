@@ -55,11 +55,11 @@ CMD ["--host=0.0.0.0", \
      "--allow-origin=*", \
      "-d /dev/video0", \
      "-r 1280x720", \
-     "--format MJPEG", \
      "-f 30", \
-     "--buffers 2", \
-     "--workers 2", \
-     "--encoder HW", \
+     "--format=MJPEG", \
+     "--buffers=2", \
+     "--workers=2", \
+     "--encoder=HW", \
      "--image-default" \
 ]
 
