@@ -32,7 +32,7 @@ RUN apt-get update \
  && apt-get install -y \
       ca-certificates \
       libevent-dev \
-      libevent-pthreads-2.1-6 \
+      libevent-pthreads-2.1-7 \
       libjpeg-dev \
       libbsd-dev \
       libgpiod-dev \
