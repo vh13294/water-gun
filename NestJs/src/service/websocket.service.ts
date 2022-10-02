@@ -106,14 +106,6 @@ export class WebSocketService implements OnApplicationBootstrap {
     await setTimeout(50);
   }
 
-  async setAutoMode(state: boolean) {
-    if (state) {
-      this.callServiceSwitchOn(this.switchIds.autoMode);
-    } else {
-      this.callServiceSwitchOff(this.switchIds.autoMode);
-    }
-  }
-
   async callServiceSetNumber(target: Servo) {
     await callService(this.connection, 'number', 'set_value', {
       entity_id: target.id,
@@ -145,6 +137,7 @@ export class WebSocketService implements OnApplicationBootstrap {
     await this.changeValveState(true);
     await setTimeout(durationMilliSecond);
     await this.changeValveState(false);
+    await setTimeout(5000);
   }
 
   async resetServos() {

@@ -44,6 +44,8 @@
     height: 500px;
     width: 500px;
     touch-action: manipulation;
+    -webkit-user-select: none; /* Safari */
+    user-select: none;
     z-index: 1;
     opacity: 0.8;
     top: 40%;

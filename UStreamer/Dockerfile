@@ -58,19 +58,10 @@ CMD ["--host=0.0.0.0", \
      "--resolution=1280x720", \
      "--desired-fps=30", \
      "--format=MJPEG", \
-     "--buffers=2", \
-     "--workers=2", \
-     "--encoder=HW", \
+     "--quality=100", \
+     # 5kb
+     "--min-frame-size=5000", \
+     "--encoder=CPU", \
+     # "--encoder=HW", \
      "--image-default" \
 ]
-
-
-# --format=uyvy \ # Device input format
-# --encoder=omx \ # Hardware encoding with OpenMAX
-# --workers=3 \ # Maximum workers for OpenMAX
-# --persistent \ # Don´t re-initialize device on timeout (for example when HDMI cable was disconnected)
-# --dv-timings \ # Use DV-timings
-# --drop-same-frames=30 # Save the traffic
-
-
-# ustreamer --help

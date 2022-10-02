@@ -11,6 +11,7 @@ export class CameraService implements OnModuleInit {
   private decoder: MjpegDecoder;
   private isProcessing = false;
   private isShooting = false;
+  private isAutoMode = false;
   private centreImage = { x: 0, y: 0 };
   private servoRatio = { yaw: 0, pitch: 0 };
 
@@ -32,13 +33,12 @@ export class CameraService implements OnModuleInit {
     this.decoder = new MjpegDecoder(url, { interval: 50, timeout: 1000 });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.decoder.on('frame', async (frame, seq) => {
-      if (!this.isProcessing) {
+      if (!this.isProcessing && this.isAutoMode) {
         this.isProcessing = true;
         try {
           await this.frameAction(frame);
         } catch (error) {
           console.log(error);
-          this.webSocketService.setAutoMode(false);
         } finally {
           this.isProcessing = false;
         }
@@ -65,7 +65,7 @@ export class CameraService implements OnModuleInit {
       );
       await this.moveToTarget(nosePoint);
       // warning no await, better
-      this.shootTarget();
+      // this.shootTarget();
     }
   }
 
@@ -98,11 +98,13 @@ export class CameraService implements OnModuleInit {
 
   @OnEvent('autoModeActivated')
   startDecoder() {
+    this.isAutoMode = true;
     this.decoder.start();
   }
 
   @OnEvent('autoModeDeactivated')
   stopDecoder() {
+    this.isAutoMode = false;
     this.decoder.stop();
   }
 }
