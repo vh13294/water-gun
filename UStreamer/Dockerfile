@@ -52,10 +52,10 @@ EXPOSE 8080
 ENTRYPOINT [ "/opt/ustreamer/ustreamer"]
 CMD ["--host=0.0.0.0", \
      "--port=8080", \
-     "--allow-origin=\*", \
+     "--allow-origin=*", \
      "-d /dev/video0", \
      "-r 1280x720", \
-     "-m JPEG", \
+     "--format MJPEG", \
      "-f 30", \
      "--buffers 2", \
      "--workers 2", \
