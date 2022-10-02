@@ -50,7 +50,18 @@ RUN groupadd ustreamer --gid 1000 \
 USER ustreamer
 EXPOSE 8080
 ENTRYPOINT [ "/opt/ustreamer/ustreamer"]
-CMD ["--host=0.0.0.0", "--port=8080", "--allow-origin=\*", ""]
+CMD ["--host=0.0.0.0", \
+     "--port=8080", \
+     "--allow-origin=\*", \
+     "-d /dev/video0", \
+     "-r 1280x720", \
+     "-m JPEG", \
+     "-f 30", \
+     "--buffers 2", \
+     "--workers 2", \
+     "--encoder HW", \
+     "--image-default" \
+]
 
 
 # --format=uyvy \ # Device input format
