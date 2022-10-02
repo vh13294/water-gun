@@ -36,6 +36,7 @@ RUN apt-get update \
       libjpeg-dev \
       libbsd-dev \
       libgpiod-dev \
+      v4l-utils \
  && apt-get clean
 
 WORKDIR /opt
@@ -53,9 +54,9 @@ ENTRYPOINT [ "/opt/ustreamer/ustreamer"]
 CMD ["--host=0.0.0.0", \
      "--port=8080", \
      "--allow-origin=*", \
-     "-d /dev/video0", \
-     "-r 1280x720", \
-     "-f 30", \
+     "--device=/dev/video0", \
+     "--resolution=1280x720", \
+     "--desired-fps=30", \
      "--format=MJPEG", \
      "--buffers=2", \
      "--workers=2", \
