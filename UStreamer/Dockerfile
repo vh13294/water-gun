@@ -59,4 +59,6 @@ CMD ["--host=0.0.0.0", "--port=8080", "--allow-origin=\*", ""]
 # --persistent \ # Don´t re-initialize device on timeout (for example when HDMI cable was disconnected)
 # --dv-timings \ # Use DV-timings
 # --drop-same-frames=30 # Save the traffic
-ustreamer --help
+
+
+# ustreamer --help
