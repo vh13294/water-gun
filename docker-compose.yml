@@ -33,16 +33,6 @@ services:
     ports:
       - "3010:80"
 
-  # camera-server:
-  #   build: ./Mjpg-streamer
-  #   image: mjpg
-  #   restart: unless-stopped
-  #   devices:
-  #     - "/dev/video0:/dev/video0"
-  #     - "/dev/video1:/dev/video1"
-  #   ports:
-  #     - "8080:8080"
-
   ustreamer:
     build: ./UStreamer
     image: ustreamer
