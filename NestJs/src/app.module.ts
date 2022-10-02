@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CameraService } from './service/camera.service';
 import { HttpModule } from '@nestjs/axios';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { StreamService } from './service/stream.service';
 
 @Module({
   imports: [
@@ -15,6 +16,12 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     HttpModule,
   ],
   controllers: [AppController],
-  providers: [TensorFlowService, WebSocketService, TaskService, CameraService],
+  providers: [
+    TensorFlowService,
+    WebSocketService,
+    TaskService,
+    CameraService,
+    StreamService,
+  ],
 })
 export class AppModule {}

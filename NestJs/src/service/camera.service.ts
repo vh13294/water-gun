@@ -2,16 +2,13 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Keypoint } from '@tensorflow-models/pose-detection';
-import MjpegDecoder from 'mjpeg-decoder';
 import { TensorFlowService } from './tensorflow.service';
 import { WebSocketService } from './websocket.service';
 
 @Injectable()
 export class CameraService implements OnModuleInit {
-  private decoder: MjpegDecoder;
   private isProcessing = false;
   private isShooting = false;
-  private isAutoMode = false;
   private centreImage = { x: 0, y: 0 };
   private servoRatio = { yaw: 0, pitch: 0 };
 
@@ -23,29 +20,7 @@ export class CameraService implements OnModuleInit {
 
   async onModuleInit() {
     this.initMetaData();
-    this.initStream();
     console.log('Camera Service started');
-  }
-
-  private async initStream() {
-    const url = this.configService.get('STREAM_URL');
-
-    this.decoder = new MjpegDecoder(url, { interval: 50, timeout: 1000 });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.decoder.on('frame', async (frame, seq) => {
-      if (!this.isProcessing && this.isAutoMode) {
-        this.isProcessing = true;
-        try {
-          await this.frameAction(frame);
-        } catch (error) {
-          console.log(error);
-        } finally {
-          this.isProcessing = false;
-        }
-        console.timeEnd('frame');
-        console.time('frame');
-      }
-    });
   }
 
   private initMetaData() {
@@ -96,15 +71,19 @@ export class CameraService implements OnModuleInit {
     }
   }
 
-  @OnEvent('autoModeActivated')
-  startDecoder() {
-    this.isAutoMode = true;
-    this.decoder.start();
-  }
-
-  @OnEvent('autoModeDeactivated')
-  stopDecoder() {
-    this.isAutoMode = false;
-    this.decoder.stop();
+  @OnEvent('onFrameReady')
+  async onFrameReady(frame: Buffer) {
+    if (!this.isProcessing) {
+      this.isProcessing = true;
+      try {
+        await this.frameAction(frame);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isProcessing = false;
+      }
+      console.timeEnd('frame');
+      console.time('frame');
+    }
   }
 }
