@@ -31,8 +31,20 @@ export class CameraService implements OnModuleInit {
     const url = this.configService.get('STREAM_URL');
 
     this.decoder = new MjpegDecoder(url, { interval: 50, timeout: 1000 });
-    this.decoder.on('frame', (frame) => {
-      this.onFrameReady(frame);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    this.decoder.on('frame', async (frame, seq) => {
+      if (!this.isProcessing && this.isAutoMode) {
+        this.isProcessing = true;
+        try {
+          await this.frameAction(frame);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          this.isProcessing = false;
+        }
+        console.timeEnd('frame');
+        console.time('frame');
+      }
     });
   }
 
@@ -42,21 +54,6 @@ export class CameraService implements OnModuleInit {
 
     this.servoRatio.yaw = Number(this.configService.get('SERVO_YAW_RATIO'));
     this.servoRatio.pitch = Number(this.configService.get('SERVO_PITCH_RATIO'));
-  }
-
-  private async onFrameReady(frame: Buffer) {
-    if (!this.isProcessing && this.isAutoMode) {
-      this.isProcessing = true;
-      try {
-        await this.frameAction(frame);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        this.isProcessing = false;
-      }
-      console.timeEnd('frame');
-      console.time('frame');
-    }
   }
 
   private async frameAction(frame: Buffer) {
