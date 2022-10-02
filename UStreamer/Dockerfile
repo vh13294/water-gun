@@ -58,11 +58,11 @@ CMD ["--host=0.0.0.0", \
      "--resolution=1280x720", \
      "--desired-fps=30", \
      "--format=MJPEG", \
-     "--quality=100", \
+     # "--quality=100", \
      # 5000byte = 5kb
      "--min-frame-size=5000", \
-     # Compare CPU mode vs HW mode
-     "--encoder=CPU", \
+     # let default selection
+     # "--encoder=CPU", \
      # "--encoder=HW", \
      "--image-default" \
 ]
