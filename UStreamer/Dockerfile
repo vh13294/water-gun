@@ -59,8 +59,9 @@ CMD ["--host=0.0.0.0", \
      "--desired-fps=30", \
      "--format=MJPEG", \
      "--quality=100", \
-     # 5kb
+     # 5000byte = 5kb
      "--min-frame-size=5000", \
+     # Compare CPU mode vs HW mode
      "--encoder=CPU", \
      # "--encoder=HW", \
      "--image-default" \
