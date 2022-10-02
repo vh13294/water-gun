@@ -31,11 +31,11 @@ FROM ubuntu:22.04 as run
 RUN apt-get update \
  && apt-get install -y \
       ca-certificates \
-      libevent-2.1 \
+      libevent-dev \
       libevent-pthreads-2.1-6 \
-      libjpeg62-turbo \
-      libbsd0 \
-      libgpiod2 \
+      libjpeg-dev \
+      libbsd-dev \
+      libgpiod-dev \
  && apt-get clean
 
 WORKDIR /opt
