@@ -13,7 +13,7 @@ RUN apt-get update \
       gcc \
       git \
       libevent-dev \
-      libjpeg62-turbo-dev \
+      libjpeg-dev \
       libbsd-dev \
       libgpiod-dev \
  && apt-get clean
