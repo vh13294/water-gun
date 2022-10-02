@@ -1,6 +1,7 @@
 1. Main compute board
 
 - Pi CM4
+- Mjpeg stream https://github.com/pikvm/ustreamer
 
 2. Micro-controller
 
