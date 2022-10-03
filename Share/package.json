@@ -1,18 +1,18 @@
 {
-  "devDependencies": {
-    "typescript": "^4.8.4"
-  },
-  "dependencies": {
-    "home-assistant-js-websocket": "^8.0.0"
-  },
   "name": "share",
   "version": "1.0.0",
-  "main": "./build/index.js",
+  "main": "./build/index",
   "scripts": {
     "build": "npx tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "home-assistant-js-websocket": "^8.0.0"
+  }
 }
