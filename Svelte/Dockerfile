@@ -4,7 +4,6 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-COPY ../Share ../Share
 
 RUN npm run build
 

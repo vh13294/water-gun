@@ -25,6 +25,8 @@ services:
     restart: unless-stopped
     ports:
       - "3015:3000"
+    volumes:
+      - ./Share:/Share
 
   svelte-server:
     build: ./Svelte
@@ -32,6 +34,8 @@ services:
     restart: unless-stopped
     ports:
       - "3010:80"
+    volumes:
+      - ./Share:/Share
 
   ustreamer:
     build: ./UStreamer

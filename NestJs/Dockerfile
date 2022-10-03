@@ -12,7 +12,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
 
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
@@ -24,7 +24,6 @@ RUN npm rebuild @tensorflow/tfjs-node --build-from-source
 
 # Bundle app source
 COPY . .
-COPY ../Share ../Share
 
 # Creates a "dist" folder with the production build
 RUN npm run build
