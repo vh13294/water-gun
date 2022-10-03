@@ -2,6 +2,7 @@ FROM node:18 as base
 
 WORKDIR /app
 COPY package*.json ./
+COPY share-1.0.0.tgz ./share-1.0.0.tgz
 RUN npm ci
 COPY . .
 
