@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "home-assistant-js-websocket": "^8.0.0"
+  }
+}

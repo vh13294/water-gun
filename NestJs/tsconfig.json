@@ -13,5 +13,9 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true
-  }
+  },
+  "references": [{ 
+    "path": "../Share",
+    "prepend": true, 
+  }]
 }

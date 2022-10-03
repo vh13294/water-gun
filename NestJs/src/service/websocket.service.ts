@@ -38,7 +38,6 @@ export class WebSocketService implements OnApplicationBootstrap {
   private switchIds = {
     relayOne: 'switch.relay_1',
     relayTwo: 'switch.relay_2',
-    autoMode: 'switch.auto_mode_active',
   };
 
   constructor(
