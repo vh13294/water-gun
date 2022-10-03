@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import { WebSocketBase } from "../../../Share";
+import { WebSocketBase } from "Share";
 
 export const autoModeState = writable(false);
 

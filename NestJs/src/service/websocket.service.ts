@@ -2,7 +2,7 @@ import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { setTimeout } from 'timers/promises';
-import { WebSocketBase } from '../../../Share';
+import { WebSocketBase } from 'Share';
 
 export interface Servo {
   max: number;

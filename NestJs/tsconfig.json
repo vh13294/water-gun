@@ -14,5 +14,4 @@
     "incremental": true,
     "skipLibCheck": true
   },
-  "references": [{ "path": "../Share" }]
 }
