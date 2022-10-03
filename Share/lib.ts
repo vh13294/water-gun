@@ -44,9 +44,9 @@ export class WebSocketBase {
   ) {
     const auth = createLongLivedTokenAuth(url, api);
     this.connection = await createConnection({ auth });
-    console.log("HA Init");
-    await this.resetServos();
+    console.log("HomeAssistant Service started");
     await this.subscribeAutoMode(callBackTrue, callBackFalse);
+    await this.resetServos();
   }
 
   async moveServoPitch(value: number) {
