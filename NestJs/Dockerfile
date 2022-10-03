@@ -24,6 +24,7 @@ RUN npm rebuild @tensorflow/tfjs-node --build-from-source
 
 # Bundle app source
 COPY . .
+COPY ../Share ../Share
 
 # Creates a "dist" folder with the production build
 RUN npm run build
