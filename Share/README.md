@@ -2,6 +2,7 @@ npm i
 
 npm run build
 
-npm run pack
+cd Svelte & Nest
 
-cp share.tgz to required folders
+npm pack ../Share
+npm i share-1.0.0.tgz
