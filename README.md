@@ -2,6 +2,7 @@
 
 - Pi CM4
 - Mjpeg stream https://github.com/pikvm/ustreamer
+- wifi rock1234, rock/rock login
 
 2. Micro-controller
 
@@ -9,7 +10,7 @@
 
 3. Tensor Flow
 
-- npm i @tensorflow/tfjs @tensorflow/tfjs-backend-cpu @tensorflow/tfjs-backend-webgl @tensorflow/tfjs-converter @tensorflow/tfjs-core @tensorflow-models/pose-detection
+- npm i @tensorflow/tfjs-node @tensorflow-models/pose-detection
 
 - https://github.com/tensorflow/tfjs-models
 
