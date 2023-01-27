@@ -3,6 +3,7 @@
 - Pi CM4
 - Mjpeg stream https://github.com/pikvm/ustreamer
 - wifi rock1234, rock/rock login
+- nmcli to manager wifi-hotspot
 
 2. Micro-controller
 
@@ -23,5 +24,5 @@ docker run -d -p 8000:8000 -p 9000:9000 -p 9443:9443 \
  portainer/portainer-ce:2.15.0
 
 5. Running
-   cp .env files
+   cp .env files (for svelte & nestJs)
    docker-compose up -d
