@@ -31,18 +31,27 @@ export class CameraService implements OnModuleInit {
 
     this.servoRatio.yaw = Number(this.configService.get('SERVO_YAW_RATIO'));
     this.servoRatio.pitch = Number(this.configService.get('SERVO_PITCH_RATIO'));
+    // console.log(`centreImage: ${this.centreImage.x}, ${this.centreImage.y}`);
+    // console.log(`servoRatio: ${this.servoRatio.yaw}, ${this.servoRatio.pitch}`);
   }
 
   private async frameAction(frame: Buffer) {
     const pose = await this.tensorFlowService.getPose(frame);
-    if (pose && pose.keypoints && pose.score > 0.4) {
-      const nosePoint = this.tensorFlowService.getSpecificKeyPoint(
-        'nose',
-        pose.keypoints,
-      );
-      await this.moveToTarget(nosePoint);
-      // warning no await, better
-      // this.shootTarget();
+    if (pose && pose.keypoints) {
+      if (pose.score > 0.35) {
+        const nosePoint = this.tensorFlowService.getSpecificKeyPoint(
+          'nose',
+          pose.keypoints,
+        );
+        if (nosePoint.score > 0.4) {
+          await this.moveToTarget(nosePoint);
+          // warning no await for shooting, better
+          // this.shootTarget();
+        }
+      }
+    } else {
+      // reset pos to center
+      await this.webSocketService.resetServos();
     }
   }
 
@@ -59,7 +68,7 @@ export class CameraService implements OnModuleInit {
 
   private async moveToTarget(keypoint: Keypoint) {
     const diffX = this.centreImage.x - keypoint.x;
-    const diffY = this.centreImage.y - keypoint.y;
+    const diffY = keypoint.y - this.centreImage.y;
 
     const moveX = this.servoRatio.yaw * diffX;
     const moveY = this.servoRatio.pitch * diffY;
@@ -67,7 +76,7 @@ export class CameraService implements OnModuleInit {
     // console.log(
     //   `key: ${keypoint.x}, ${keypoint.y}, diff: ${diffX}, ${diffY}, move: ${moveX}, ${moveY}`,
     // );
-    console.log(keypoint.score);
+    // console.log(keypoint.score);
     await this.webSocketService.moveServos(moveX, moveY);
   }
 
