@@ -20,10 +20,9 @@ export class TensorFlowService implements OnModuleInit {
     }
   }
 
-  // todo temporary fix
   async getPose(imageBuffer: Uint8Array) {
     const tensor = tf.node.decodeJpeg(imageBuffer);
-    const pose = await this.detector.estimatePoses(tensor as any);
+    const pose = await this.detector.estimatePoses(tensor);
     tensor.dispose();
     return pose[0]?.keypoints;
   }
