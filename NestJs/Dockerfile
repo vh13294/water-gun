@@ -1,5 +1,7 @@
 FROM ubuntu:22.04
 
+# Dependency require to rebuild tensorflow
+# npm rebuild --build-from-source
 RUN apt-get update -y
 RUN apt-get upgrade -y
 RUN apt-get install -y \
