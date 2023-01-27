@@ -11,7 +11,7 @@
 
 3. Tensor Flow
 
-- npm i @tensorflow/tfjs-core @tensorflow/tfjs-node @tensorflow-models/pose-detection
+- npm i @tensorflow/tfjs @tensorflow/tfjs-backend-cpu @tensorflow/tfjs-backend-webgl @tensorflow/tfjs-converter @tensorflow/tfjs-core @tensorflow-models/pose-detection
 
 - https://github.com/tensorflow/tfjs-models
 
