@@ -6,6 +6,7 @@ import {
   SupportedModels,
 } from '@tensorflow-models/pose-detection';
 import * as tf from '@tensorflow/tfjs-node';
+import { Tensor3D } from '@tensorflow/tfjs-core';
 
 @Injectable()
 export class TensorFlowService implements OnModuleInit {
@@ -20,9 +21,12 @@ export class TensorFlowService implements OnModuleInit {
     }
   }
 
+  // todo temporary fix
   async getPose(imageBuffer: Uint8Array) {
     const tensor = tf.node.decodeJpeg(imageBuffer);
-    const pose = await this.detector.estimatePoses(tensor);
+    const pose = await this.detector.estimatePoses(
+      tensor as unknown as Tensor3D,
+    );
     tensor.dispose();
     return pose[0]?.keypoints;
   }

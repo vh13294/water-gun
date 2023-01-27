@@ -10,9 +10,9 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.4"
   },
   "dependencies": {
-    "home-assistant-js-websocket": "^8.0.0"
+    "home-assistant-js-websocket": "^8.0.1"
   }
 }
