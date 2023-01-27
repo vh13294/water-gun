@@ -20,11 +20,12 @@ export class TensorFlowService implements OnModuleInit {
     }
   }
 
+  // estimate Poses only return single pose
   async getPose(imageBuffer: Uint8Array) {
     const tensor = tf.node.decodeJpeg(imageBuffer);
     const pose = await this.detector.estimatePoses(tensor);
     tensor.dispose();
-    return pose[0]?.keypoints;
+    return pose[0];
   }
 
   getSpecificKeyPoint(bodyPart: string, keypoints: Keypoint[]) {

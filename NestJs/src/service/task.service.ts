@@ -16,7 +16,7 @@ export class TaskService {
     this.canvasDraw([], jimpImg);
   }
 
-  async canvasDraw(keypoints: Keypoint[], buffer: Buffer) {
+  async canvasDraw(keypoints: Keypoint[], buffer: Buffer, filename = '') {
     const image = await loadImage(buffer);
 
     const canvas = createCanvas(image.width, image.height);
@@ -30,6 +30,7 @@ export class TaskService {
       context.fillRect(element.x, element.y, 50, 50);
     });
 
-    await writeFile('public/output.jpg', canvas.toBuffer());
+    // await writeFile('public/output.jpg', canvas.toBuffer());
+    await writeFile(`public/${filename}-temp.jpg`, canvas.toBuffer());
   }
 }

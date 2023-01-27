@@ -2,6 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Keypoint } from '@tensorflow-models/pose-detection';
+import { TaskService } from './task.service';
 import { TensorFlowService } from './tensorflow.service';
 import { WebSocketService } from './websocket.service';
 
@@ -16,6 +17,7 @@ export class CameraService implements OnModuleInit {
     private configService: ConfigService,
     private readonly tensorFlowService: TensorFlowService,
     private readonly webSocketService: WebSocketService,
+    private readonly taskService: TaskService,
   ) {}
 
   async onModuleInit() {
@@ -32,15 +34,26 @@ export class CameraService implements OnModuleInit {
   }
 
   private async frameAction(frame: Buffer) {
-    const keypoints = await this.tensorFlowService.getPose(frame);
-    if (keypoints) {
+    const pose = await this.tensorFlowService.getPose(frame);
+    if (pose.keypoints && pose.score > 0.4) {
       const nosePoint = this.tensorFlowService.getSpecificKeyPoint(
         'nose',
-        keypoints,
+        pose.keypoints,
       );
       await this.moveToTarget(nosePoint);
       // warning no await, better
       // this.shootTarget();
+    }
+  }
+
+  private async frameActionTest(frame: Buffer) {
+    const pose = await this.tensorFlowService.getPose(frame);
+    if (pose.keypoints && pose.score > 0.1) {
+      await this.taskService.canvasDraw(
+        pose.keypoints,
+        frame,
+        pose.score.toString(),
+      );
     }
   }
 
@@ -77,6 +90,7 @@ export class CameraService implements OnModuleInit {
       this.isProcessing = true;
       try {
         await this.frameAction(frame);
+        // await this.frameActionTest(frame);
       } catch (error) {
         console.log(error);
       } finally {
