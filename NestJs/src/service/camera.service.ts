@@ -35,7 +35,7 @@ export class CameraService implements OnModuleInit {
 
   private async frameAction(frame: Buffer) {
     const pose = await this.tensorFlowService.getPose(frame);
-    if (pose.keypoints && pose.score > 0.4) {
+    if (pose && pose.keypoints && pose.score > 0.4) {
       const nosePoint = this.tensorFlowService.getSpecificKeyPoint(
         'nose',
         pose.keypoints,
@@ -48,7 +48,7 @@ export class CameraService implements OnModuleInit {
 
   private async frameActionTest(frame: Buffer) {
     const pose = await this.tensorFlowService.getPose(frame);
-    if (pose.keypoints && pose.score > 0.1) {
+    if (pose && pose.keypoints && pose.score > 0.1) {
       await this.taskService.canvasDraw(
         pose.keypoints,
         frame,
