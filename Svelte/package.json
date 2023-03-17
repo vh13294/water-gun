@@ -10,7 +10,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "share": "file:share-1.0.0.tgz"
+    "share": "file:share-1.0.1.tgz"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.2",

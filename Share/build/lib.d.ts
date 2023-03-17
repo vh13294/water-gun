@@ -9,11 +9,13 @@ export declare class WebSocketBase {
     private pitch;
     private yaw;
     private switchIds;
-    connectHA(url: string, api: string, callBackTrue: Function, callBackFalse: Function): Promise<void>;
+    connectHA(url: string, api: string, autoTrackingEvent: Function, autoShootEvent: Function): Promise<void>;
     moveServoPitch(value: number): Promise<void>;
     moveServoYaw(value: number): Promise<void>;
-    subscribeAutoMode(callBackTrue: Function, callBackFalse: Function): Promise<void>;
-    setAutoMode(state: boolean): Promise<void>;
+    subscribeTrackingEvent(autoTrackingEvent: Function): Promise<void>;
+    subscribeShootEvent(autoShootEvent: Function): Promise<void>;
+    setAutoTracking(state: boolean): Promise<void>;
+    setAutoShoot(state: boolean): Promise<void>;
     releaseValve(durationMilliSecond: number): Promise<void>;
     changePumpState(state: boolean): Promise<void>;
     changeValveState(state: boolean): Promise<void>;

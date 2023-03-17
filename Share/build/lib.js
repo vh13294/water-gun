@@ -19,13 +19,15 @@ class WebSocketBase {
     switchIds = {
         relayOne: "switch.relay_1",
         relayTwo: "switch.relay_2",
-        autoMode: "switch.auto_mode_active",
+        autoTracking: "switch.auto_tracking_switch",
+        autoShoot: "switch.auto_shoot_switch",
     };
-    async connectHA(url, api, callBackTrue, callBackFalse) {
+    async connectHA(url, api, autoTrackingEvent, autoShootEvent) {
         const auth = (0, home_assistant_js_websocket_1.createLongLivedTokenAuth)(url, api);
         this.connection = await (0, home_assistant_js_websocket_1.createConnection)({ auth });
         console.log("HomeAssistant Service started");
-        await this.subscribeAutoMode(callBackTrue, callBackFalse);
+        await this.subscribeTrackingEvent(autoTrackingEvent);
+        await this.subscribeShootEvent(autoShootEvent);
         await this.resetServos();
     }
     async moveServoPitch(value) {
@@ -44,23 +46,42 @@ class WebSocketBase {
             await this.callServiceSetNumber(this.yaw);
         }
     }
-    async subscribeAutoMode(callBackTrue, callBackFalse) {
+    async subscribeTrackingEvent(autoTrackingEvent) {
         (0, home_assistant_js_websocket_1.subscribeEntities)(this.connection, (ent) => {
-            const newState = ent["switch.auto_mode_active"].state;
+            const newState = ent[this.switchIds.autoTracking].state;
             if (newState === "on") {
-                callBackTrue();
+                autoTrackingEvent(true);
             }
             else if (newState === "off") {
-                callBackFalse();
+                autoTrackingEvent(false);
             }
         });
     }
-    async setAutoMode(state) {
+    async subscribeShootEvent(autoShootEvent) {
+        (0, home_assistant_js_websocket_1.subscribeEntities)(this.connection, (ent) => {
+            const newState = ent[this.switchIds.autoShoot].state;
+            if (newState === "on") {
+                autoShootEvent(true);
+            }
+            else if (newState === "off") {
+                autoShootEvent(false);
+            }
+        });
+    }
+    async setAutoTracking(state) {
         if (state) {
-            await this.callServiceSwitchOn(this.switchIds.autoMode);
+            await this.callServiceSwitchOn(this.switchIds.autoTracking);
         }
         else {
-            await this.callServiceSwitchOff(this.switchIds.autoMode);
+            await this.callServiceSwitchOff(this.switchIds.autoTracking);
+        }
+    }
+    async setAutoShoot(state) {
+        if (state) {
+            await this.callServiceSwitchOn(this.switchIds.autoTracking);
+        }
+        else {
+            await this.callServiceSwitchOff(this.switchIds.autoTracking);
         }
     }
     async releaseValve(durationMilliSecond) {

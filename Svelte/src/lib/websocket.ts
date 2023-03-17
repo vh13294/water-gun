@@ -1,7 +1,8 @@
 import { writable } from "svelte/store";
 import { WebSocketBase } from "share";
 
-export const autoModeState = writable(false);
+export const autoTrackingState = writable(false);
+export const autoShootState = writable(false);
 
 class WebSocket extends WebSocketBase {
   constructor() {
@@ -10,11 +11,19 @@ class WebSocket extends WebSocketBase {
     this.connectHA(
       import.meta.env.VITE_HOME_ASSISTANT_URL,
       import.meta.env.VITE_HOME_ASSISTANT_API,
-      () => {
-        autoModeState.set(true);
+      (state: boolean) => {
+        if (state) {
+          autoTrackingState.set(true);
+        } else {
+          autoTrackingState.set(false);
+        }
       },
-      () => {
-        autoModeState.set(false);
+      (state: boolean) => {
+        if (state) {
+          autoShootState.set(true);
+        } else {
+          autoShootState.set(false);
+        }
       }
     );
   }

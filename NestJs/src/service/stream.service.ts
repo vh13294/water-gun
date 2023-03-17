@@ -39,12 +39,12 @@ export class StreamService implements OnModuleInit {
     });
   }
 
-  @OnEvent('autoModeActivated')
+  @OnEvent('autoTrackingActivated')
   async streamStart() {
     this.stream.resume();
   }
 
-  @OnEvent('autoModeDeactivated')
+  @OnEvent('autoTrackingDeactivated')
   async streamStop() {
     this.stream.pause();
   }

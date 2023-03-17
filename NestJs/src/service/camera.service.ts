@@ -12,6 +12,7 @@ export class CameraService implements OnModuleInit {
   private isShooting = false;
   private centreImage = { x: 0, y: 0 };
   private servoRatio = { yaw: 0, pitch: 0 };
+  private autoShoot = false;
 
   constructor(
     private configService: ConfigService,
@@ -23,6 +24,16 @@ export class CameraService implements OnModuleInit {
   async onModuleInit() {
     this.initMetaData();
     console.log('Camera Service started');
+  }
+
+  @OnEvent('autoShootActivated')
+  async autoShootOn() {
+    this.autoShoot = true;
+  }
+
+  @OnEvent('autoShootDeactivated')
+  async autoShootOff() {
+    this.autoShoot = false;
   }
 
   private initMetaData() {
@@ -46,7 +57,7 @@ export class CameraService implements OnModuleInit {
         if (nosePoint.score > 0.4) {
           await this.moveToTarget(nosePoint);
           // warning no await for shooting, better
-          // this.shootTarget();
+          this.shootTarget();
         }
       }
     } else {
@@ -81,7 +92,7 @@ export class CameraService implements OnModuleInit {
   }
 
   private async shootTarget() {
-    if (!this.isShooting) {
+    if (!this.isShooting && this.autoShoot) {
       this.isShooting = true;
       try {
         await this.webSocketService.releaseWaterValve(500);

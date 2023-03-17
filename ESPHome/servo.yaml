@@ -27,7 +27,10 @@ wifi:
 captive_portal:
 
 globals:
-  - id: auto_mode
+  - id: auto_tracking
+    type: bool
+    initial_value: "false"
+  - id: auto_shoot
     type: bool
     initial_value: "false"
 
@@ -84,15 +87,29 @@ switch:
     pin: D7
 
   - platform: template
-    name: Auto Mode Active
-    id: auto_mode_active
+    name: Auto Tracking Active
+    id: auto_tracking_switch
     turn_on_action:
       - globals.set:
-          id: auto_mode
+          id: auto_tracking
           value: "true"
     turn_off_action:
       - globals.set:
-          id: auto_mode
+          id: auto_tracking
           value: "false"
     lambda: |-
-      return id(auto_mode);
+      return id(auto_tracking);
+
+  - platform: template
+    name: Auto Shoot Active
+    id: auto_shoot_switch
+    turn_on_action:
+      - globals.set:
+          id: auto_shoot
+          value: "true"
+    turn_off_action:
+      - globals.set:
+          id: auto_shoot
+          value: "false"
+    lambda: |-
+      return id(auto_shoot);

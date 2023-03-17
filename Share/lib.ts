@@ -33,19 +33,21 @@ export class WebSocketBase {
   private switchIds = {
     relayOne: "switch.relay_1",
     relayTwo: "switch.relay_2",
-    autoMode: "switch.auto_mode_active",
+    autoTracking: "switch.auto_tracking_switch",
+    autoShoot: "switch.auto_shoot_switch",
   };
 
   async connectHA(
     url: string,
     api: string,
-    callBackTrue: Function,
-    callBackFalse: Function
+    autoTrackingEvent: Function,
+    autoShootEvent: Function
   ) {
     const auth = createLongLivedTokenAuth(url, api);
     this.connection = await createConnection({ auth });
     console.log("HomeAssistant Service started");
-    await this.subscribeAutoMode(callBackTrue, callBackFalse);
+    await this.subscribeTrackingEvent(autoTrackingEvent);
+    await this.subscribeShootEvent(autoShootEvent);
     await this.resetServos();
   }
 
@@ -69,22 +71,41 @@ export class WebSocketBase {
     }
   }
 
-  async subscribeAutoMode(callBackTrue: Function, callBackFalse: Function) {
+  async subscribeTrackingEvent(autoTrackingEvent: Function) {
     subscribeEntities(this.connection, (ent) => {
-      const newState = ent["switch.auto_mode_active"].state;
+      const newState = ent[this.switchIds.autoTracking].state;
       if (newState === "on") {
-        callBackTrue();
+        autoTrackingEvent(true);
       } else if (newState === "off") {
-        callBackFalse();
+        autoTrackingEvent(false);
       }
     });
   }
 
-  async setAutoMode(state: boolean) {
+  async subscribeShootEvent(autoShootEvent: Function) {
+    subscribeEntities(this.connection, (ent) => {
+      const newState = ent[this.switchIds.autoShoot].state;
+      if (newState === "on") {
+        autoShootEvent(true);
+      } else if (newState === "off") {
+        autoShootEvent(false);
+      }
+    });
+  }
+
+  async setAutoTracking(state: boolean) {
     if (state) {
-      await this.callServiceSwitchOn(this.switchIds.autoMode);
+      await this.callServiceSwitchOn(this.switchIds.autoTracking);
     } else {
-      await this.callServiceSwitchOff(this.switchIds.autoMode);
+      await this.callServiceSwitchOff(this.switchIds.autoTracking);
+    }
+  }
+
+  async setAutoShoot(state: boolean) {
+    if (state) {
+      await this.callServiceSwitchOn(this.switchIds.autoTracking);
+    } else {
+      await this.callServiceSwitchOff(this.switchIds.autoTracking);
     }
   }
 

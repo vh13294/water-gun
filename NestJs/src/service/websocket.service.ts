@@ -38,11 +38,19 @@ export class WebSocketService
     await this.connectHA(
       this.configService.get('HOME_ASSISTANT_URL'),
       this.configService.get('HOME_ASSISTANT_API'),
-      () => {
-        this.eventEmitter.emit('autoModeActivated');
+      (state: boolean) => {
+        if (state) {
+          this.eventEmitter.emit('autoTrackingActivated');
+        } else {
+          this.eventEmitter.emit('autoTrackingDeactivated');
+        }
       },
-      () => {
-        this.eventEmitter.emit('autoModeDeactivated');
+      (state: boolean) => {
+        if (state) {
+          this.eventEmitter.emit('autoShootActivated');
+        } else {
+          this.eventEmitter.emit('autoShootDeactivated');
+        }
       },
     );
   }
