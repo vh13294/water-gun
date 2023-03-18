@@ -87,8 +87,7 @@ switch:
     pin: D7
 
   - platform: template
-    name: Auto Tracking Active
-    id: auto_tracking_switch
+    name: Auto Tracking Switch
     turn_on_action:
       - globals.set:
           id: auto_tracking
@@ -101,8 +100,7 @@ switch:
       return id(auto_tracking);
 
   - platform: template
-    name: Auto Shoot Active
-    id: auto_shoot_switch
+    name: Auto Shoot Switch
     turn_on_action:
       - globals.set:
           id: auto_shoot
