@@ -18,7 +18,7 @@ WORKDIR /app
 
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
-COPY share-1.0.0.tgz ./share-1.0.0.tgz
+COPY share-1.0.1.tgz ./share-1.0.1.tgz
 
 
 # Install app dependencies
