@@ -26,5 +26,6 @@ docker run -d -p 8000:8000 -p 9000:9000 -p 9443:9443 \
 5. Running
    cp .env files (for svelte & nestJs)
    docker-compose up -d
+   docker-compose up -d --build
    docker-compose build
    docker-compose build --no-cache --pull

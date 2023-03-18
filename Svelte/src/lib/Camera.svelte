@@ -13,6 +13,10 @@
     width: 960px;
     height: 540px;
     background-color: antiquewhite;
+    background-image: url("crosshair.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100px;
     position: absolute;
     top: 40%;
     left: 50%;

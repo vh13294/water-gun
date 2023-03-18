@@ -21,31 +21,35 @@
     <!-- <button on:click={() => websocket.printServoPos()}>Print servo pos</button> -->
   </div>
 
-  <div style="background-color: rgba(170, 128, 61, 0.073);">
+  <div style="background-color: rgba(200 255 212);">
     <button on:click={() => (showAutoSettings = !showAutoSettings)}>
       Auto Mode</button
     >
 
     {#if showAutoSettings}
-      <button on:click={() => websocket.setAutoTracking(true)}>
-        Auto Tracking On
-      </button>
+      <div
+        style="display: flex; flex-wrap: wrap; justify-content: space-around;"
+      >
+        <button on:click={() => websocket.setAutoTracking(true)}>
+          Auto Tracking On
+        </button>
 
-      <button on:click={() => websocket.setAutoTracking(false)}>
-        Auto Tracking Off
-      </button>
+        <button on:click={() => websocket.setAutoTracking(false)}>
+          Auto Tracking Off
+        </button>
 
-      <button on:click={() => websocket.setAutoShoot(true)}>
-        Auto Shoot On
-      </button>
+        <button on:click={() => websocket.setAutoShoot(true)}>
+          Auto Shoot On
+        </button>
 
-      <button on:click={() => websocket.setAutoShoot(false)}>
-        Auto Shoot Off
-      </button>
+        <button on:click={() => websocket.setAutoShoot(false)}>
+          Auto Shoot Off
+        </button>
+      </div>
     {/if}
   </div>
 
-  <div style="background-color: rgba(170, 128, 61, 0.073);">
+  <div style="background-color: rgba(244 213 163);">
     <button on:click={() => (showAdvancedSettings = !showAdvancedSettings)}>
       Advanced</button
     >
