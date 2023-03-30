@@ -21,11 +21,12 @@ docker run -d -p 8000:8000 -p 9000:9000 -p 9443:9443 \
  portainer/portainer-ce:2.17.1
 
 5. Running
-   cp .env files (for svelte & nestJs)
+   cp .env for NestJs
+   Svelte & Vite automatically select .env.production
    docker-compose up -d
    docker-compose up -d --build
    docker-compose build
-   docker-compose build --no-cache --pull
+   docker-compose build --no-cache
 
 6. Initialization
    - Create WiFi hot-spot
