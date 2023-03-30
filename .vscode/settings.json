@@ -1,12 +1,14 @@
 {
-    "cSpell.words": [
-        "Keypoint",
-        "keypoints",
-        "longpress",
-        "Mjpeg",
-        "nestjs",
-        "onlongpress",
-        "sveltejs",
-        "tfjs"
-    ]
+  "cSpell.words": [
+    "Hotspot",
+    "Keypoint",
+    "keypoints",
+    "longpress",
+    "Mjpeg",
+    "nestjs",
+    "onlongpress",
+    "ssid",
+    "sveltejs",
+    "tfjs"
+  ]
 }

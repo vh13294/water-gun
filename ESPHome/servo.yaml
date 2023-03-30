@@ -16,7 +16,7 @@ ota:
   password: "4dc66c90dd4af0a50b69e624cce5f179"
 
 wifi:
-  ssid: "Hostspot"
+  ssid: "Hotspot"
   password: "rock1234"
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails

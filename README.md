@@ -26,3 +26,10 @@ docker run -d -p 8000:8000 -p 9000:9000 -p 9443:9443 \
    docker-compose up -d --build
    docker-compose build
    docker-compose build --no-cache --pull
+
+6. Initialization
+   - Create WiFi hot-spot
+   - Setup HomeAssistant
+   - Create API Key (Long-Lived Access Tokens)
+   - Setup ESPHome (port 6052)
+   - Copy HomeAssistant API Key
