@@ -15,10 +15,5 @@ sudo apt install linux-wifi-hotspot
 
 ## On boot/startup
 
-1.  Maybe backup old config file (/etc/create_ap.conf)
-2.  Create a config with
-
-- create_ap wlp1s0 wlp1s0 Hotspot rock1234 --freq-band 2.4 --mkconfig /etc/create_ap.conf
-
-3.  Start the systemd service systemctl start create_ap
-4.  Enable the service for start on Boot systemctl enable create_ap
+- sudo crontab -e
+- @reboot sleep 10 && create_ap wlp1s0 wlp1s0 Hotspot rock1234 --freq-band 2.4 --daemon
