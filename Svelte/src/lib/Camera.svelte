@@ -1,22 +1,26 @@
-<div class="camera">
+<div>
   <!-- USE ROUTER IP -->
   <img
     src={import.meta.env.VITE_CAMERA_STREAM_URL}
-    width="960"
-    height="540"
     alt="camera"
+    class="position"
   />
+
+  <img alt="crosshair" class="position crosshair" />
 </div>
 
 <style>
-  .camera {
-    width: 960px;
-    height: 540px;
-    background-color: antiquewhite;
+  .crosshair {
+    opacity: 0.8;
     background-image: url("/crosshair.svg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100px;
+  }
+
+  .position {
+    height: 540px;
+    width: 960px;
     position: absolute;
     top: 40%;
     left: 50%;
@@ -24,7 +28,7 @@
   }
 
   @media only screen and (max-width: 1200px) {
-    .camera {
+    .position {
       transform-origin: top left;
       transform: scale(0.7) translate(-50%, -50%);
     }
