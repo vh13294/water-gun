@@ -36,7 +36,7 @@ export class SshService implements OnModuleInit {
   async shutdownServer() {
     this.ssh
       .execCommand(
-        `ssh -tt ${this.username}@${this.url} 'sudo shutdown -h now'`,
+        `ssh -tt ${this.username}@${this.url} -o StrictHostKeyChecking=no 'sudo shutdown -h now'`,
       )
       .then((result) => {
         console.log('STDOUT: ' + result.stdout);
@@ -47,7 +47,7 @@ export class SshService implements OnModuleInit {
   async rebootServer() {
     this.ssh
       .execCommand(
-        `ssh -tt ${this.username}@${this.url} 'sudo shutdown -r now'`,
+        `ssh -tt ${this.username}@${this.url} -o StrictHostKeyChecking=no 'sudo shutdown -r now'`,
       )
       .then((result) => {
         console.log('STDOUT: ' + result.stdout);
