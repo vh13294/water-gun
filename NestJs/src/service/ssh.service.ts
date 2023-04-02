@@ -18,7 +18,8 @@ export class SshService implements OnModuleInit {
   }
 
   initConfigs() {
-    this.url = this.configService.get('BASE_URL');
+    // this.url = this.configService.get('BASE_URL');
+    this.url = 'localhost';
     this.username = this.configService.get('SERVER_USERNAME');
     this.password = this.configService.get('SERVER_PASSWORD');
   }
