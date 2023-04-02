@@ -30,7 +30,8 @@ export class StreamService implements OnModuleInit {
   }
 
   async initStream() {
-    const url = this.configService.get('STREAM_URL');
+    const url =
+      this.configService.get('BASE_URL') + this.configService.get('STREAM_URL');
     const response = await fetch(url);
     this.stream = response.body;
     this.stream.pause();

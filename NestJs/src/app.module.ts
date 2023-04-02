@@ -8,6 +8,7 @@ import { CameraService } from './service/camera.service';
 import { HttpModule } from '@nestjs/axios';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { StreamService } from './service/stream.service';
+import { SshService } from './service/ssh.service';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { StreamService } from './service/stream.service';
     TaskService,
     CameraService,
     StreamService,
+    SshService,
   ],
 })
 export class AppModule {}

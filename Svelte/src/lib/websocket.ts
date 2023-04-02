@@ -8,9 +8,12 @@ class WebSocket extends WebSocketBase {
   constructor() {
     super();
 
+    const url =
+      import.meta.env.VITE_BASE_URL + import.meta.env.VITE_HOME_ASSISTANT_URL;
+    const apiKey = import.meta.env.VITE_HOME_ASSISTANT_API;
     this.connectHA(
-      import.meta.env.VITE_HOME_ASSISTANT_URL,
-      import.meta.env.VITE_HOME_ASSISTANT_API,
+      url,
+      apiKey,
       (state: boolean) => {
         if (state) {
           autoTrackingState.set(true);

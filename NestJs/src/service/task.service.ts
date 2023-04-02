@@ -10,7 +10,9 @@ export class TaskService {
   constructor(private configService: ConfigService) {}
 
   async takeSnapShot(buffer: Buffer) {
-    // const url = this.configService.get('SNAP_SHOT_URL');
+    // const url =
+    //   this.configService.get('BASE_URL') +
+    //   this.configService.get('SNAP_SHOT_URL');
     const imageBuffer = await Jimp.read(buffer);
     const jimpImg = await imageBuffer.getBufferAsync(Jimp.MIME_JPEG);
     this.canvasDraw([], jimpImg);

@@ -35,9 +35,14 @@ export class WebSocketService
   }
 
   async init() {
+    const haUrl =
+      this.configService.get('BASE_URL') +
+      this.configService.get('HOME_ASSISTANT_URL');
+    const apiKey = this.configService.get('HOME_ASSISTANT_API');
+
     await this.connectHA(
-      this.configService.get('HOME_ASSISTANT_URL'),
-      this.configService.get('HOME_ASSISTANT_API'),
+      haUrl,
+      apiKey,
       (state: boolean) => {
         if (state) {
           this.eventEmitter.emit('autoTrackingActivated');

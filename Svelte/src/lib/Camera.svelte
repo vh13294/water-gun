@@ -1,7 +1,7 @@
 <div>
   <!-- USE ROUTER IP -->
   <img
-    src={import.meta.env.VITE_CAMERA_STREAM_URL}
+    src={import.meta.env.VITE_BASE_URL + import.meta.env.VITE_CAMERA_STREAM_URL}
     alt="camera"
     class="position"
   />
