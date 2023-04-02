@@ -21,26 +21,26 @@ services:
     privileged: true
     network_mode: host
 
+  # port 3000
   nest-server:
     build: ./NestJs
     image: nest
     restart: unless-stopped
-    ports:
-      - "3015:3000"
+    network_mode: host
 
+  # port 80
   svelte-server:
     build: ./Svelte
     image: svelte
     restart: unless-stopped
-    ports:
-      - "3010:80"
+    network_mode: host
 
+  # port 8080
   ustreamer:
     build: ./UStreamer
     image: ustreamer
     restart: unless-stopped
-    ports:
-      - "8080:8080"
+    network_mode: host
     devices:
       - /dev/video0:/dev/video0
       - /dev/video1:/dev/video1
