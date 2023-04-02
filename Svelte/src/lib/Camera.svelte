@@ -1,10 +1,11 @@
+<script lang="ts">
+  const streamUrl =
+    import.meta.env.VITE_BASE_URL + import.meta.env.VITE_CAMERA_STREAM_URL;
+</script>
+
 <div>
   <!-- USE ROUTER IP -->
-  <img
-    src={import.meta.env.VITE_BASE_URL + import.meta.env.VITE_CAMERA_STREAM_URL}
-    alt="camera"
-    class="position"
-  />
+  <img src={streamUrl} alt="camera" class="position" />
 
   <img alt="crosshair" class="position crosshair" />
 </div>

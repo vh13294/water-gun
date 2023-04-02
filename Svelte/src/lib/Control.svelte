@@ -2,8 +2,14 @@
   import websocket from "./websocket";
   import { autoTrackingState, autoShootState } from "./websocket";
 
+  const streamUrl =
+    import.meta.env.VITE_BASE_URL + import.meta.env.VITE_SERVER_URL;
+  const shutdownUrl = `${streamUrl}/shutdown`;
+  const rebootUrl = `${streamUrl}/reboot`;
+
   let showAdvancedSettings = false;
   let showAutoSettings = false;
+  let showServerSettings = false;
 </script>
 
 <div class="control">
@@ -83,6 +89,22 @@
         <button on:click={() => websocket.turnOffAllRelays()}>
           off All relays
         </button>
+      </div>
+    {/if}
+  </div>
+
+  <div style="background-color: rgba(163 191 244);">
+    <button on:click={() => (showServerSettings = !showServerSettings)}>
+      Server</button
+    >
+
+    {#if showServerSettings}
+      <div
+        style="display: flex; flex-wrap: wrap; justify-content: space-around;"
+      >
+        <button on:click={() => fetch(shutdownUrl)}> Shutdown </button>
+
+        <button on:click={() => fetch(rebootUrl)}> Reboot </button>
       </div>
     {/if}
   </div>
