@@ -6,7 +6,7 @@ RUN apt-get update -y
 RUN apt-get upgrade -y
 RUN apt-get install -y \
     build-essential \
-    curl \
+    curl sshpass \
     libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev \
     wget python3 make gcc libc6-dev 
 
