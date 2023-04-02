@@ -14,7 +14,7 @@ export class SshService implements OnModuleInit {
   async onModuleInit() {
     this.initConfigs();
     await this.connectToServer();
-    console.log('Camera Service started');
+    console.log('SSH Service started');
   }
 
   initConfigs() {
