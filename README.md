@@ -37,10 +37,5 @@ docker run -d -p 8000:8000 -p 9000:9000 -p 9443:9443 \
    - Copy HomeAssistant API Key
 
 7. Remote reboot host server
-
-   - sudo ssh-keygen -t rsa -f /home/id_rsa_client
-   - ssh-copy-id -i /home/id_rsa_client.pub panha@localhost
    - sudo visudo (add line below to the file)
    - panha ALL=(ALL) NOPASSWD: /sbin/poweroff, /sbin/reboot, /sbin/shutdown
-
-   - COPY private key /home/id_rsa_client to .ENV

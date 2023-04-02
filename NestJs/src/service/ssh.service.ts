@@ -9,7 +9,7 @@ export class SshService implements OnModuleInit {
   private ssh = new NodeSSH();
   private url: string;
   private username: string;
-  private privateKey: string;
+  private password: string;
 
   async onModuleInit() {
     this.initConfigs();
@@ -21,7 +21,7 @@ export class SshService implements OnModuleInit {
     // this.url = this.configService.get('BASE_URL');
     this.url = 'localhost';
     this.username = this.configService.get('SERVER_USERNAME');
-    this.privateKey = this.configService.get('SERVER_PRIVATE_KEY');
+    this.password = this.configService.get('SERVER_PASSWORD');
   }
 
   async connectToServer() {
@@ -29,7 +29,7 @@ export class SshService implements OnModuleInit {
       host: this.url,
       port: 22,
       username: this.username,
-      privateKey: this.privateKey,
+      password: this.password,
     });
   }
 
