@@ -12,14 +12,14 @@ services:
     network_mode: host
 
   # port 6052
-  esphome:
-    container_name: esphome
-    image: esphome/esphome
-    volumes:
-      - ./ESPHome/config:/config
-      - /etc/localtime:/etc/localtime:ro
-    privileged: true
-    network_mode: host
+  # esphome:
+  #   container_name: esphome
+  #   image: esphome/esphome
+  #   volumes:
+  #     - ./ESPHome/config:/config
+  #     - /etc/localtime:/etc/localtime:ro
+  #   privileged: true
+  #   network_mode: host
 
   # port 3000
   nest-server:
