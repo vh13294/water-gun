@@ -47,16 +47,12 @@ export class WebSocketService
   }
 
   async shootViaValve(durationMilliSecond: number) {
-    await this.changeValveState(true);
-    await setTimeout(durationMilliSecond);
-    await this.changeValveState(false);
+    await this.releaseValve(durationMilliSecond);
     await setTimeout(5000);
   }
 
   async shootViaPump(durationMilliSecond: number) {
-    await this.changeValveState(true);
-    await setTimeout(durationMilliSecond);
-    await this.changeValveState(false);
+    await this.releasePump(durationMilliSecond);
     await setTimeout(5000);
   }
 }

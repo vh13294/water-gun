@@ -11,6 +11,7 @@
   let showAdvancedSettings = false;
   let showAutoSettings = false;
   let showServerSettings = false;
+  let showSecondaryShoot = false;
 </script>
 
 <div class="control">
@@ -19,10 +20,29 @@
       style="flex: 0 0 80%; height: 3rem;"
       on:click={() => websocket.releaseValve(500)}
     >
-      Shoot
+      Shoot (Valve)
     </button>
 
     <!-- <button on:click={() => websocket.printServoPos()}>Print servo pos</button> -->
+  </div>
+
+  <div style="background-color: rgba(244 163 163);">
+    <button on:click={() => (showSecondaryShoot = !showSecondaryShoot)}>
+      If valve is broken</button
+    >
+
+    {#if showSecondaryShoot}
+      <div
+        style="display: flex; flex-wrap: wrap; justify-content: space-around;"
+      >
+        <button
+          style="flex: 0 0 80%; height: 3rem;"
+          on:click={() => websocket.releasePump(1500)}
+        >
+          Shoot (Pump)
+        </button>
+      </div>
+    {/if}
   </div>
 
   <div style="background-color: rgba(200 255 212);">

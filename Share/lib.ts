@@ -68,6 +68,13 @@ export class WebSocketBase {
     }, durationMilliSecond);
   }
 
+  async releasePump(durationMilliSecond: number) {
+    await this.changePumpState(true);
+    setTimeout(async () => {
+      await this.changePumpState(false);
+    }, durationMilliSecond);
+  }
+
   async changePumpState(state: boolean) {
     if (state) {
       await this.callServiceSwitchOn(this.switchIds.relayOne);
