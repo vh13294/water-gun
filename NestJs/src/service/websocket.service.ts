@@ -1,6 +1,5 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { setTimeout } from 'timers/promises';
 import { WebSocketBase } from 'share';
 
@@ -16,10 +15,7 @@ export class WebSocketService
   extends WebSocketBase
   implements OnApplicationBootstrap
 {
-  constructor(
-    private configService: ConfigService,
-    private eventEmitter: EventEmitter2,
-  ) {
+  constructor(private configService: ConfigService) {
     super();
   }
 
@@ -40,24 +36,7 @@ export class WebSocketService
       this.configService.get('HOME_ASSISTANT_URL');
     const apiKey = this.configService.get('HOME_ASSISTANT_API');
 
-    await this.connectHA(
-      haUrl,
-      apiKey,
-      (state: boolean) => {
-        if (state) {
-          this.eventEmitter.emit('autoTrackingActivated');
-        } else {
-          this.eventEmitter.emit('autoTrackingDeactivated');
-        }
-      },
-      (state: boolean) => {
-        if (state) {
-          this.eventEmitter.emit('autoShootActivated');
-        } else {
-          this.eventEmitter.emit('autoShootDeactivated');
-        }
-      },
-    );
+    await this.connectHA(haUrl, apiKey);
   }
 
   async moveServos(yaw: number, pitch: number) {
@@ -67,7 +46,14 @@ export class WebSocketService
     await setTimeout(50);
   }
 
-  async releaseWaterValve(durationMilliSecond: number) {
+  async shootViaValve(durationMilliSecond: number) {
+    await this.changeValveState(true);
+    await setTimeout(durationMilliSecond);
+    await this.changeValveState(false);
+    await setTimeout(5000);
+  }
+
+  async shootViaPump(durationMilliSecond: number) {
     await this.changeValveState(true);
     await setTimeout(durationMilliSecond);
     await this.changeValveState(false);

@@ -12,7 +12,8 @@ export class CameraService implements OnModuleInit {
   private isShooting = false;
   private centreImage = { x: 0, y: 0 };
   private servoRatio = { yaw: 0, pitch: 0 };
-  private autoShoot = false;
+  private autoShootViaValve = false;
+  private autoShootViaPump = false;
 
   constructor(
     private configService: ConfigService,
@@ -26,14 +27,14 @@ export class CameraService implements OnModuleInit {
     console.log('Camera Service started');
   }
 
-  @OnEvent('autoShootActivated')
-  async autoShootOn() {
-    this.autoShoot = true;
+  @OnEvent('autoShootViaValve')
+  async setShootModeValve(payload: { state: boolean }) {
+    this.autoShootViaValve = payload.state;
   }
 
-  @OnEvent('autoShootDeactivated')
-  async autoShootOff() {
-    this.autoShoot = false;
+  @OnEvent('autoShootViaPump')
+  async setShootModePump(payload: { state: boolean }) {
+    this.autoShootViaPump = payload.state;
   }
 
   private initMetaData() {
@@ -55,8 +56,8 @@ export class CameraService implements OnModuleInit {
           pose.keypoints,
         );
         if (nosePoint.score > 0.4) {
-          await this.moveToTarget(nosePoint);
-          // warning no await for shooting, better
+          // warning no await is better
+          this.moveToTarget(nosePoint);
           this.shootTarget();
         }
       }
@@ -92,10 +93,14 @@ export class CameraService implements OnModuleInit {
   }
 
   private async shootTarget() {
-    if (!this.isShooting && this.autoShoot) {
+    if (!this.isShooting) {
       this.isShooting = true;
       try {
-        await this.webSocketService.releaseWaterValve(500);
+        if (this.autoShootViaValve) {
+          await this.webSocketService.shootViaValve(500);
+        } else if (this.autoShootViaPump) {
+          await this.webSocketService.shootViaPump(1500);
+        }
       } catch (error) {
         console.log(error);
       } finally {

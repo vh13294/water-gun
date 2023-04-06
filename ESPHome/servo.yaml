@@ -26,14 +26,6 @@ wifi:
 
 captive_portal:
 
-globals:
-  - id: auto_tracking
-    type: bool
-    initial_value: "false"
-  - id: auto_shoot
-    type: bool
-    initial_value: "false"
-
 number:
   - platform: template
     name: Pitch Control
@@ -85,29 +77,3 @@ switch:
   - platform: gpio
     name: "Relay_2"
     pin: D7
-
-  - platform: template
-    name: Auto Tracking Switch
-    turn_on_action:
-      - globals.set:
-          id: auto_tracking
-          value: "true"
-    turn_off_action:
-      - globals.set:
-          id: auto_tracking
-          value: "false"
-    lambda: |-
-      return id(auto_tracking);
-
-  - platform: template
-    name: Auto Shoot Switch
-    turn_on_action:
-      - globals.set:
-          id: auto_shoot
-          value: "true"
-    turn_off_action:
-      - globals.set:
-          id: auto_shoot
-          value: "false"
-    lambda: |-
-      return id(auto_shoot);

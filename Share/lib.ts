@@ -3,7 +3,6 @@ import {
   Connection,
   createConnection,
   createLongLivedTokenAuth,
-  subscribeEntities,
 } from "home-assistant-js-websocket";
 
 interface Servo {
@@ -33,21 +32,12 @@ export class WebSocketBase {
   private switchIds = {
     relayOne: "switch.relay_1",
     relayTwo: "switch.relay_2",
-    autoTracking: "switch.auto_tracking_switch",
-    autoShoot: "switch.auto_shoot_switch",
   };
 
-  async connectHA(
-    url: string,
-    api: string,
-    autoTrackingEvent: Function,
-    autoShootEvent: Function
-  ) {
+  async connectHA(url: string, api: string) {
     const auth = createLongLivedTokenAuth(url, api);
     this.connection = await createConnection({ auth });
     console.log("HomeAssistant Service started");
-    await this.subscribeTrackingEvent(autoTrackingEvent);
-    await this.subscribeShootEvent(autoShootEvent);
     await this.resetServos();
   }
 
@@ -68,44 +58,6 @@ export class WebSocketBase {
 
     if (init !== this.yaw.value) {
       await this.callServiceSetNumber(this.yaw);
-    }
-  }
-
-  async subscribeTrackingEvent(autoTrackingEvent: Function) {
-    subscribeEntities(this.connection, (ent) => {
-      const newState = ent[this.switchIds.autoTracking].state;
-      if (newState === "on") {
-        autoTrackingEvent(true);
-      } else if (newState === "off") {
-        autoTrackingEvent(false);
-      }
-    });
-  }
-
-  async subscribeShootEvent(autoShootEvent: Function) {
-    subscribeEntities(this.connection, (ent) => {
-      const newState = ent[this.switchIds.autoShoot].state;
-      if (newState === "on") {
-        autoShootEvent(true);
-      } else if (newState === "off") {
-        autoShootEvent(false);
-      }
-    });
-  }
-
-  async setAutoTracking(state: boolean) {
-    if (state) {
-      await this.callServiceSwitchOn(this.switchIds.autoTracking);
-    } else {
-      await this.callServiceSwitchOff(this.switchIds.autoTracking);
-    }
-  }
-
-  async setAutoShoot(state: boolean) {
-    if (state) {
-      await this.callServiceSwitchOn(this.switchIds.autoTracking);
-    } else {
-      await this.callServiceSwitchOff(this.switchIds.autoTracking);
     }
   }
 
@@ -161,7 +113,7 @@ export class WebSocketBase {
     await this.changePumpState(true);
     setTimeout(async () => {
       await this.changeValveState(false);
-    }, 5000);
+    }, 3000);
   }
 
   async resetServos() {

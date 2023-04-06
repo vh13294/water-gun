@@ -1,11 +1,12 @@
 <script lang="ts">
   import websocket from "./websocket";
-  import { autoTrackingState, autoShootState } from "./websocket";
 
   const streamUrl =
     import.meta.env.VITE_BASE_URL + import.meta.env.VITE_SERVER_URL;
   const shutdownUrl = `${streamUrl}/shutdown`;
   const rebootUrl = `${streamUrl}/reboot`;
+  const autoTrackingUrl = `${streamUrl}/auto-tracking`;
+  const autoShootUrl = `${streamUrl}/auto-shoot`;
 
   let showAdvancedSettings = false;
   let showAutoSettings = false;
@@ -13,9 +14,6 @@
 </script>
 
 <div class="control">
-  <h3>Auto Tracking State: {$autoTrackingState}</h3>
-  <h3>Auto Shoot State: {$autoShootState}</h3>
-
   <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
     <button
       style="flex: 0 0 80%; height: 3rem;"
@@ -36,20 +34,64 @@
       <div
         style="display: flex; flex-wrap: wrap; justify-content: space-around;"
       >
-        <button on:click={() => websocket.setAutoTracking(true)}>
+        <button
+          on:click={() =>
+            fetch(autoTrackingUrl, {
+              method: "POST",
+              body: JSON.stringify({ state: true }),
+            })}
+        >
           Auto Tracking On
         </button>
 
-        <button on:click={() => websocket.setAutoTracking(false)}>
+        <button
+          on:click={() =>
+            fetch(autoTrackingUrl, {
+              method: "POST",
+              body: JSON.stringify({ state: false }),
+            })}
+        >
           Auto Tracking Off
         </button>
 
-        <button on:click={() => websocket.setAutoShoot(true)}>
-          Auto Shoot On
+        <button
+          on:click={() =>
+            fetch(autoShootUrl, {
+              method: "POST",
+              body: JSON.stringify({ state: true, mode: "valve" }),
+            })}
+        >
+          Auto Shoot On (Valve)
         </button>
 
-        <button on:click={() => websocket.setAutoShoot(false)}>
-          Auto Shoot Off
+        <button
+          on:click={() =>
+            fetch(autoShootUrl, {
+              method: "POST",
+              body: JSON.stringify({ state: false, mode: "valve" }),
+            })}
+        >
+          Auto Shoot Off (Valve)
+        </button>
+
+        <button
+          on:click={() =>
+            fetch(autoShootUrl, {
+              method: "POST",
+              body: JSON.stringify({ state: true, mode: "pump" }),
+            })}
+        >
+          Auto Shoot On (Pump)
+        </button>
+
+        <button
+          on:click={() =>
+            fetch(autoShootUrl, {
+              method: "POST",
+              body: JSON.stringify({ state: false, mode: "pump" }),
+            })}
+        >
+          Auto Shoot Off (Pump)
         </button>
       </div>
     {/if}
