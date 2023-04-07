@@ -12,6 +12,18 @@
   let showAutoSettings = false;
   let showServerSettings = false;
   let showSecondaryShoot = false;
+
+  function fetchPost(url: string, obj: Object) {
+    // application/json
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify(obj),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+  }
 </script>
 
 <div class="control">
@@ -54,62 +66,38 @@
       <div
         style="display: flex; flex-wrap: wrap; justify-content: space-around;"
       >
-        <button
-          on:click={() =>
-            fetch(autoTrackingUrl, {
-              method: "POST",
-              body: JSON.stringify({ state: true }),
-            })}
-        >
+        <button on:click={() => fetchPost(autoTrackingUrl, { state: true })}>
           Auto Tracking On
         </button>
 
-        <button
-          on:click={() =>
-            fetch(autoTrackingUrl, {
-              method: "POST",
-              body: JSON.stringify({ state: false }),
-            })}
-        >
+        <button on:click={() => fetchPost(autoTrackingUrl, { state: false })}>
           Auto Tracking Off
         </button>
 
         <button
           on:click={() =>
-            fetch(autoShootUrl, {
-              method: "POST",
-              body: JSON.stringify({ state: true, mode: "valve" }),
-            })}
+            fetchPost(autoShootUrl, { state: true, mode: "valve" })}
         >
           Auto Shoot On (Valve)
         </button>
 
         <button
           on:click={() =>
-            fetch(autoShootUrl, {
-              method: "POST",
-              body: JSON.stringify({ state: false, mode: "valve" }),
-            })}
+            fetchPost(autoShootUrl, { state: false, mode: "valve" })}
         >
           Auto Shoot Off (Valve)
         </button>
 
         <button
           on:click={() =>
-            fetch(autoShootUrl, {
-              method: "POST",
-              body: JSON.stringify({ state: true, mode: "pump" }),
-            })}
+            fetchPost(autoShootUrl, { state: true, mode: "pump" })}
         >
           Auto Shoot On (Pump)
         </button>
 
         <button
           on:click={() =>
-            fetch(autoShootUrl, {
-              method: "POST",
-              body: JSON.stringify({ state: false, mode: "pump" }),
-            })}
+            fetchPost(autoShootUrl, { state: false, mode: "pump" })}
         >
           Auto Shoot Off (Pump)
         </button>
