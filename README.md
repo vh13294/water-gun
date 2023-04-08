@@ -37,5 +37,8 @@ docker run -d -p 8000:8000 -p 9000:9000 -p 9443:9443 \
    - Copy HomeAssistant API Key
 
 7. Remote reboot host server
+
    - sudo visudo (add line below to the file)
    - panha ALL=(ALL) NOPASSWD: /sbin/poweroff, /sbin/reboot, /sbin/shutdown
+
+8. Home Assistant / ESPHome will slow down after running 1h-2h +

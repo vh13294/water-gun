@@ -56,8 +56,7 @@ export class CameraService implements OnModuleInit {
           pose.keypoints,
         );
         if (nosePoint.score > 0.4) {
-          // warning no await is better
-          this.moveToTarget(nosePoint);
+          await this.moveToTarget(nosePoint);
           this.shootTarget();
         }
       }

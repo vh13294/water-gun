@@ -5,12 +5,12 @@ esp8266:
   board: d1_mini
 
 # Enable logging
-logger:
+# logger:
 
 # # Enable Home Assistant API
 api:
-#   encryption:
-#     key: "FryJTE813MPny4Htexjrn5sSdrEhiHv/bTWgLeZQGMY="
+  encryption:
+    key: "FryJTE813MPny4Htexjrn5sSdrEhiHv/bTWgLeZQGMY="
 
 ota:
   password: "4dc66c90dd4af0a50b69e624cce5f179"
@@ -19,10 +19,19 @@ wifi:
   ssid: "Hotspot"
   password: "rock1234"
 
+  # Optional manual IP
+  manual_ip:
+    static_ip: 192.168.12.123
+    gateway: 192.168.12.1
+    subnet: 255.255.255.0
+
+  fast_connect: true
+  power_save_mode: none
+
   # Enable fallback hotspot (captive portal) in case wifi connection fails
-  ap:
-    ssid: "D1 Fallback Hotspot"
-    password: "5JIlTa2R7wgf"
+  # ap:
+  #   ssid: "D1 Fallback Hotspot"
+  #   password: "5JIlTa2R7wgf"
 
 captive_portal:
 
